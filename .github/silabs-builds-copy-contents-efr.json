@@ -1,0 +1,96 @@
+{
+    "standard": {
+        "lighting-app": [
+            {
+                "boards": ["brd4187c", "brd1019a", "brd4407a"],
+                "arguments": ["--copy-sources"]
+            }
+        ],
+        "thermostat": [
+            {
+                "boards": ["brd4187c"],
+                "arguments": ["--copy-sources"]
+            }
+        ],
+        "lock-app": [
+            {
+                "boards": ["brd4187c"],
+                "arguments": ["--copy-sources"]
+            }
+        ],
+        "window-app": [
+            {
+                "boards": ["brd4187c"],
+                "arguments": ["--copy-sources"]
+            }
+        ],
+        "zigbee-matter-light": [
+            {
+                "boards": ["brd4187c"],
+                "arguments": ["--copy-sources", "'--with matter_zigbee_sequential;matter'"]
+            }
+        ]
+    },
+    "full": {
+        "lighting-app": [
+            {
+                "boards": ["brd4187c", "brd1019a", "brd4407a"],
+                "arguments": ["--copy-sources"]
+            }
+        ],
+        "thermostat": [
+            {
+                "boards": ["brd4187c"],
+                "arguments": ["--copy-sources"]
+            }
+        ],
+        "lock-app": [
+            {
+                "boards": ["brd4187c"],
+                "arguments": ["--copy-sources"]
+            }
+        ],
+        "window-app": [
+            {
+                "boards": ["brd4187c"],
+                "arguments": ["--copy-sources"]
+            }
+        ],
+        "zigbee-matter-light-sequential": [
+            {
+                "boards": ["brd4187c"],
+                "arguments": ["--copy-sources", "'--with matter_zigbee_sequential;matter'"]
+            }
+        ],
+        "light-switch-app": [
+            {
+                "boards": ["brd4187c"],
+                "arguments": ["--copy-sources"]
+            }
+        ],
+        "onoff-plug-app": [
+            {
+                "boards": ["brd4187c"],
+                "arguments": ["--copy-sources"]
+            }
+        ],
+        "multi-sensor-app": [
+            {
+                "boards": ["brd4186c"],
+                "arguments": ["--copy-sources"]
+            }
+        ],
+        "air-quality-sensor-app": [
+            {
+                "boards": ["brd4187c"],
+                "arguments": ["--copy-sources"]
+            }
+        ],
+        "refrigerator-app": [
+            {
+                "boards": ["brd4187c"],
+                "arguments": ["--copy-sources"]
+            }
+        ]
+    }
+}

@@ -173,6 +173,13 @@ jobs:
         with:
             build-type: ${{ needs.set-build-type.outputs.build-type }}
 
+    build-copy-contents:
+        name: Build Copy Contents
+        needs: set-build-type
+        uses: ./.github/workflows/copy-contents-builder.yaml
+        with:
+            build-type: ${{ needs.set-build-type.outputs.build-type }}
+
     merge-apps:
         name: Merge App Artifacts
         runs-on: ubuntu-latest

@@ -1,0 +1,102 @@
+{
+    "standard": {
+        "onoff-plug-app": [
+            {
+                "boards": ["'brd2605a;wiseconnect3_sdk'"],
+                "arguments": ["--copy-sources"]
+            }
+        ],
+        "air-quality-sensor-app": [
+            {
+                "boards": ["'brd2708a;wiseconnect3_sdk'"],
+                "arguments": ["--copy-sources"]
+            }
+        ],
+        "fan-control-app": [
+            {
+                "boards": ["'brd2911a;wiseconnect3_sdk'"],
+                "arguments": ["--copy-sources"]
+            }
+        ],
+        "lighting-app": [
+            {
+                "boards": ["'brd4338a;wiseconnect3_sdk'"],
+                "arguments": ["--copy-sources"]
+            }
+        ],
+        "refrigerator-app": [
+            {
+                "boards": ["'brd4338a;wiseconnect3_sdk'"],
+                "arguments": ["--copy-sources"]
+            }
+        ],
+        "multi-sensor-app": [
+            {
+                "boards": ["'brd4343a;wiseconnect3_sdk'"],
+                "arguments": ["--copy-sources"]
+            }
+        ]
+    },
+    "full": {
+        "onoff-plug-app": [
+            {
+                "boards": ["'brd2605a;wiseconnect3_sdk'"],
+                "arguments": ["--copy-sources"]
+            }
+        ],
+        "air-quality-sensor-app": [
+            {
+                "boards": ["'brd2708a;wiseconnect3_sdk'"],
+                "arguments": ["--copy-sources"]
+            }
+        ],
+        "fan-control-app": [
+            {
+                "boards": ["'brd2911a;wiseconnect3_sdk'"],
+                "arguments": ["--copy-sources"]
+            }
+        ],
+        "lighting-app": [
+            {
+                "boards": ["'brd4338a;wiseconnect3_sdk'"],
+                "arguments": ["--copy-sources"]
+            }
+        ],
+        "refrigerator-app": [
+            {
+                "boards": ["'brd4338a;wiseconnect3_sdk'"],
+                "arguments": ["--copy-sources"]
+            }
+        ],
+        "multi-sensor-app": [
+            {
+                "boards": ["'brd4343a;wiseconnect3_sdk'"],
+                "arguments": ["--copy-sources"]
+            }
+        ],
+        "thermostat": [
+            {
+                "boards": ["'brd4342a;wiseconnect3_sdk'"],
+                "arguments": ["--copy-sources"]
+            }
+        ],
+        "lock-app": [
+            {
+                "boards": ["'brd4343a;wiseconnect3_sdk'"],
+                "arguments": ["--copy-sources"]
+            }
+        ],
+        "light-switch-app": [
+            {
+                "boards": ["'brd4342a;wiseconnect3_sdk'"],
+                "arguments": ["--copy-sources"]
+            }
+        ],
+        "window-app": [
+            {
+                "boards": ["'brd4343a;wiseconnect3_sdk'"],
+                "arguments": ["--copy-sources"]
+            }
+        ]
+    }
+}
