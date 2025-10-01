@@ -13,7 +13,7 @@ concurrency:
 
 jobs:
     lighting-app-efr-copy:
-        name: Copy Contents - Lighting App EFR
+        name: Lighting App efr32
         uses: ./.github/workflows/builder.yaml
         with:
             json-file-path: './.github/silabs-builds-copy-contents-efr.json'
@@ -23,7 +23,7 @@ jobs:
             platform: lighting-app-efr-copy-contents
 
     thermostat-efr-copy:
-        name: Copy Contents - Thermostat EFR (RS911X)
+        name: Thermostat efr32 (RS911X)
         uses: ./.github/workflows/builder.yaml
         with:
             json-file-path: './.github/silabs-builds-copy-contents-efr.json'
@@ -33,7 +33,7 @@ jobs:
             platform: thermostat-rs911x-efr-copy-contents
 
     lock-app-efr-copy:
-        name: Copy Contents - Lock App EFR (WF200)
+        name: Lock App efr32 (WF200)
         uses: ./.github/workflows/builder.yaml
         with:
             json-file-path: './.github/silabs-builds-copy-contents-efr.json'
@@ -43,7 +43,7 @@ jobs:
             platform: lock-app-wf200-efr-copy-contents
 
     window-app-efr-copy:
-        name: Copy Contents - Window App EFR (917-NCP)
+        name: Window App efr32 (917-NCP)
         uses: ./.github/workflows/builder.yaml
         with:
             json-file-path: './.github/silabs-builds-copy-contents-efr.json'
@@ -53,7 +53,7 @@ jobs:
             platform: window-app-917ncp-efr-copy-contents
 
     zigbee-matter-light-efr-copy:
-        name: Copy Contents - Zigbee Matter Light EFR
+        name: Zigbee Matter Light efr32
         uses: ./.github/workflows/builder.yaml
         with:
             json-file-path: './.github/silabs-builds-copy-contents-efr.json'
@@ -64,7 +64,7 @@ jobs:
 
     light-switch-app-efr-copy:
         if: ${{ inputs.build-type == 'full' }}
-        name: Copy Contents - Light Switch App EFR
+        name: Light Switch App efr32
         uses: ./.github/workflows/builder.yaml
         with:
             json-file-path: './.github/silabs-builds-copy-contents-efr.json'
@@ -75,7 +75,7 @@ jobs:
 
     onoff-plug-app-efr-copy:
         if: ${{ inputs.build-type == 'full' }}
-        name: Copy Contents - OnOff Plug App EFR
+        name: OnOff Plug App efr32
         uses: ./.github/workflows/builder.yaml
         with:
             json-file-path: './.github/silabs-builds-copy-contents-efr.json'
@@ -86,7 +86,7 @@ jobs:
 
     multi-sensor-app-efr-copy:
         if: ${{ inputs.build-type == 'full' }}
-        name: Copy Contents - Multi Sensor App EFR
+        name: Multi Sensor App efr32
         uses: ./.github/workflows/builder.yaml
         with:
             json-file-path: './.github/silabs-builds-copy-contents-efr.json'
@@ -97,7 +97,7 @@ jobs:
 
     air-quality-sensor-app-efr-copy:
         if: ${{ inputs.build-type == 'full' }}
-        name: Copy Contents - Air Quality Sensor App EFR
+        name: Air Quality Sensor App efr32
         uses: ./.github/workflows/builder.yaml
         with:
             json-file-path: './.github/silabs-builds-copy-contents-efr.json'
@@ -108,7 +108,7 @@ jobs:
 
     refrigerator-app-efr-copy:
         if: ${{ inputs.build-type == 'full' }}
-        name: Copy Contents - Refrigerator App EFR
+        name: Refrigerator App efr32
         uses: ./.github/workflows/builder.yaml
         with:
             json-file-path: './.github/silabs-builds-copy-contents-efr.json'
@@ -117,19 +117,8 @@ jobs:
             build-type: ${{ inputs.build-type }}
             platform: refrigerator-app-efr-copy-contents
 
-    zigbee-matter-light-concurrent-efr-copy:
-        if: ${{ inputs.build-type == 'full' }}
-        name: Copy Contents - Zigbee Matter Light EFR (Concurrent)
-        uses: ./.github/workflows/builder.yaml
-        with:
-            json-file-path: './.github/silabs-builds-copy-contents-efr.json'
-            path-to-example-app: slc/sample-app/zigbee-matter-light/efr32/zigbee-matter-light.slcp
-            example-app: zigbee-matter-light-concurrent
-            build-type: ${{ inputs.build-type }}
-            platform: zigbee-matter-light-concurrent-efr-copy-contents
-
     onoff-plug-app-917soc-copy:
-        name: Copy Contents - OnOff Plug App 917 SOC (BRD2605A)
+        name: OnOff Plug App 917 SOC (BRD2605A)
         uses: ./.github/workflows/builder.yaml
         with:
             json-file-path: './.github/silabs-builds-copy-contents-917soc.json'
@@ -139,7 +128,7 @@ jobs:
             platform: onoff-plug-app-917soc-copy-contents
 
     air-quality-sensor-app-917soc-copy:
-        name: Copy Contents - Air Quality Sensor App 917 SOC (BRD2708A)
+        name: Air Quality Sensor App 917 SOC (BRD2708A)
         uses: ./.github/workflows/builder.yaml
         with:
             json-file-path: './.github/silabs-builds-copy-contents-917soc.json'
@@ -149,7 +138,7 @@ jobs:
             platform: air-quality-sensor-app-917soc-copy-contents
 
     fan-control-app-917soc-copy:
-        name: Copy Contents - Fan Control App 917 SOC (BRD2911A)
+        name: Fan Control App 917 SOC (BRD2911A)
         uses: ./.github/workflows/builder.yaml
         with:
             json-file-path: './.github/silabs-builds-copy-contents-917soc.json'
@@ -159,7 +148,7 @@ jobs:
             platform: fan-control-app-917soc-copy-contents
 
     lighting-app-917soc-copy:
-        name: Copy Contents - Lighting App 917 SOC (BRD4338A)
+        name: Lighting App 917 SOC (BRD4338A)
         uses: ./.github/workflows/builder.yaml
         with:
             json-file-path: './.github/silabs-builds-copy-contents-917soc.json'
@@ -169,7 +158,7 @@ jobs:
             platform: lighting-app-917soc-copy-contents
 
     refrigerator-app-917soc-copy:
-        name: Copy Contents - Refrigerator App 917 SOC (BRD4338A)
+        name: Refrigerator App 917 SOC (BRD4338A)
         uses: ./.github/workflows/builder.yaml
         with:
             json-file-path: './.github/silabs-builds-copy-contents-917soc.json'
@@ -179,7 +168,7 @@ jobs:
             platform: refrigerator-app-917soc-copy-contents
 
     multi-sensor-app-917soc-copy:
-        name: Copy Contents - Multi Sensor App 917 SOC (BRD4343A)
+        name: Multi Sensor App 917 SOC (BRD4343A)
         uses: ./.github/workflows/builder.yaml
         with:
             json-file-path: './.github/silabs-builds-copy-contents-917soc.json'
@@ -190,7 +179,7 @@ jobs:
 
     thermostat-917soc-copy:
         if: ${{ inputs.build-type == 'full' }}
-        name: Copy Contents - Thermostat 917 SOC (BRD4342A)
+        name: Thermostat 917 SOC (BRD4342A)
         uses: ./.github/workflows/builder.yaml
         with:
             json-file-path: './.github/silabs-builds-copy-contents-917soc.json'
@@ -201,7 +190,7 @@ jobs:
 
     lock-app-917soc-copy:
         if: ${{ inputs.build-type == 'full' }}
-        name: Copy Contents - Lock App 917 SOC (BRD4343A)
+        name: Lock App 917 SOC (BRD4343A)
         uses: ./.github/workflows/builder.yaml
         with:
             json-file-path: './.github/silabs-builds-copy-contents-917soc.json'
@@ -212,7 +201,7 @@ jobs:
 
     light-switch-app-917soc-copy:
         if: ${{ inputs.build-type == 'full' }}
-        name: Copy Contents - Light Switch App 917 SOC (BRD4342A)
+        name: Light Switch App 917 SOC (BRD4342A)
         uses: ./.github/workflows/builder.yaml
         with:
             json-file-path: './.github/silabs-builds-copy-contents-917soc.json'
@@ -223,7 +212,7 @@ jobs:
 
     window-app-917soc-copy:
         if: ${{ inputs.build-type == 'full' }}
-        name: Copy Contents - Window App 917 SOC (BRD4343A)
+        name: Window App 917 SOC (BRD4343A)
         uses: ./.github/workflows/builder.yaml
         with:
             json-file-path: './.github/silabs-builds-copy-contents-917soc.json'

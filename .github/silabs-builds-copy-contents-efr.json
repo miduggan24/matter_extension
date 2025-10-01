@@ -56,7 +56,7 @@
                 "arguments": ["--copy-sources"]
             }
         ],
-        "zigbee-matter-light-sequential": [
+        "zigbee-matter-light": [
             {
                 "boards": ["brd4187c"],
                 "arguments": ["--copy-sources", "'--with matter_zigbee_sequential;matter'"]
