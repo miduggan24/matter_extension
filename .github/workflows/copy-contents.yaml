@@ -12,212 +12,107 @@ concurrency:
     cancel-in-progress: true
 
 jobs:
-    lighting-app-efr-copy:
-        name: Lighting App efr32
-        uses: ./.github/workflows/builder.yaml
+    build-lighting-app-copy:
+        name: Build Lighting App (Copy Contents)
+        uses: ./.github/workflows/copy-contents-platform-builder.yaml
         with:
-            json-file-path: './.github/silabs-builds-copy-contents-efr.json'
-            path-to-example-app: slc/sample-app/lighting-app/efr32/lighting-app-thread.slcp
-            example-app: lighting-app
+            example-app: "lighting-app"
             build-type: ${{ inputs.build-type }}
-            platform: lighting-app-efr-copy-contents
+            efr32-thread-support: true
+            siwx917-soc-support: true
 
-    thermostat-efr-copy:
-        name: Thermostat efr32 (RS911X)
-        uses: ./.github/workflows/builder.yaml
+    build-thermostat-copy:
+        name: Build Thermostat (Copy Contents)
+        uses: ./.github/workflows/copy-contents-platform-builder.yaml
         with:
-            json-file-path: './.github/silabs-builds-copy-contents-efr.json'
-            path-to-example-app: slc/sample-app/thermostat/efr32/thermostat-rs911x.slcp
-            example-app: thermostat
+            example-app: "thermostat"
             build-type: ${{ inputs.build-type }}
-            platform: thermostat-rs911x-efr-copy-contents
+            efr32-rs911x-support: true
+            siwx917-soc-support: true
 
-    lock-app-efr-copy:
-        name: Lock App efr32 (WF200)
-        uses: ./.github/workflows/builder.yaml
+    build-lock-app-copy:
+        name: Build Lock App (Copy Contents)
+        uses: ./.github/workflows/copy-contents-platform-builder.yaml
         with:
-            json-file-path: './.github/silabs-builds-copy-contents-efr.json'
-            path-to-example-app: slc/sample-app/lock-app/efr32/lock-app-wf200.slcp
-            example-app: lock-app
+            example-app: "lock-app"
             build-type: ${{ inputs.build-type }}
-            platform: lock-app-wf200-efr-copy-contents
+            efr32-wf200-support: true
+            siwx917-soc-support: true
 
-    window-app-efr-copy:
-        name: Window App efr32 (917-NCP)
-        uses: ./.github/workflows/builder.yaml
+    build-window-app-copy:
+        name: Build Window App (Copy Contents)
+        uses: ./.github/workflows/copy-contents-platform-builder.yaml
         with:
-            json-file-path: './.github/silabs-builds-copy-contents-efr.json'
-            path-to-example-app: slc/sample-app/window-app/efr32/window-app-917-ncp.slcp
-            example-app: window-app
+            example-app: "window-app"
             build-type: ${{ inputs.build-type }}
-            platform: window-app-917ncp-efr-copy-contents
+            efr32-917ncp-support: true
+            siwx917-soc-support: true
 
-    zigbee-matter-light-efr-copy:
-        name: Zigbee Matter Light efr32
-        uses: ./.github/workflows/builder.yaml
+    build-zigbee-matter-light-copy:
+        name: Build Zigbee Matter Light (Copy Contents)
+        uses: ./.github/workflows/copy-contents-platform-builder.yaml
         with:
-            json-file-path: './.github/silabs-builds-copy-contents-efr.json'
-            path-to-example-app: slc/sample-app/zigbee-matter-light/efr32/zigbee-matter-light.slcp
-            example-app: zigbee-matter-light
+            example-app: "zigbee-matter-light"
             build-type: ${{ inputs.build-type }}
-            platform: zigbee-matter-light-efr-copy-contents
+            efr32-thread-support: true
 
-    light-switch-app-efr-copy:
+    # Additional apps for full build
+    build-light-switch-app-copy:
         if: ${{ inputs.build-type == 'full' }}
-        name: Light Switch App efr32
-        uses: ./.github/workflows/builder.yaml
+        name: Build Light Switch App (Copy Contents)
+        uses: ./.github/workflows/copy-contents-platform-builder.yaml
         with:
-            json-file-path: './.github/silabs-builds-copy-contents-efr.json'
-            path-to-example-app: slc/sample-app/light-switch-app/efr32/light-switch-app-thread.slcp
-            example-app: light-switch-app
+            example-app: "light-switch-app"
             build-type: ${{ inputs.build-type }}
-            platform: light-switch-app-efr-copy-contents
+            efr32-thread-support: true
+            siwx917-soc-support: true
 
-    onoff-plug-app-efr-copy:
+    build-onoff-plug-app-copy:
         if: ${{ inputs.build-type == 'full' }}
-        name: OnOff Plug App efr32
-        uses: ./.github/workflows/builder.yaml
+        name: Build OnOff Plug App (Copy Contents)
+        uses: ./.github/workflows/copy-contents-platform-builder.yaml
         with:
-            json-file-path: './.github/silabs-builds-copy-contents-efr.json'
-            path-to-example-app: slc/sample-app/onoff-plug-app/efr32/onoff-plug-app-thread.slcp
-            example-app: onoff-plug-app
+            example-app: "onoff-plug-app"
             build-type: ${{ inputs.build-type }}
-            platform: onoff-plug-app-efr-copy-contents
+            efr32-thread-support: true
+            siwx917-soc-support: true
 
-    multi-sensor-app-efr-copy:
+    build-multi-sensor-app-copy:
         if: ${{ inputs.build-type == 'full' }}
-        name: Multi Sensor App efr32
-        uses: ./.github/workflows/builder.yaml
+        name: Build Multi Sensor App (Copy Contents)
+        uses: ./.github/workflows/copy-contents-platform-builder.yaml
         with:
-            json-file-path: './.github/silabs-builds-copy-contents-efr.json'
-            path-to-example-app: slc/sample-app/multi-sensor-app/efr32/multi-sensor-app-thread.slcp
-            example-app: multi-sensor-app
+            example-app: "multi-sensor-app"
             build-type: ${{ inputs.build-type }}
-            platform: multi-sensor-app-efr-copy-contents
+            efr32-thread-support: true
+            siwx917-soc-support: true
 
-    air-quality-sensor-app-efr-copy:
+    build-air-quality-sensor-app-copy:
         if: ${{ inputs.build-type == 'full' }}
-        name: Air Quality Sensor App efr32
-        uses: ./.github/workflows/builder.yaml
+        name: Build Air Quality Sensor App (Copy Contents)
+        uses: ./.github/workflows/copy-contents-platform-builder.yaml
         with:
-            json-file-path: './.github/silabs-builds-copy-contents-efr.json'
-            path-to-example-app: slc/sample-app/air-quality-sensor-app/efr32/air-quality-sensor-app-thread.slcp
-            example-app: air-quality-sensor-app
+            example-app: "air-quality-sensor-app"
             build-type: ${{ inputs.build-type }}
-            platform: air-quality-sensor-app-efr-copy-contents
+            efr32-thread-support: true
+            siwx917-soc-support: true
 
-    refrigerator-app-efr-copy:
+    build-refrigerator-app-copy:
         if: ${{ inputs.build-type == 'full' }}
-        name: Refrigerator App efr32
-        uses: ./.github/workflows/builder.yaml
+        name: Build Refrigerator App (Copy Contents)
+        uses: ./.github/workflows/copy-contents-platform-builder.yaml
         with:
-            json-file-path: './.github/silabs-builds-copy-contents-efr.json'
-            path-to-example-app: slc/sample-app/refrigerator-app/efr32/refrigerator-app-thread.slcp
-            example-app: refrigerator-app
+            example-app: "refrigerator-app"
             build-type: ${{ inputs.build-type }}
-            platform: refrigerator-app-efr-copy-contents
+            efr32-thread-support: true
+            siwx917-soc-support: true
 
-    onoff-plug-app-917soc-copy:
-        name: OnOff Plug App 917 SOC (BRD2605A)
-        uses: ./.github/workflows/builder.yaml
+    build-fan-control-app-copy:
+        name: Build Fan Control App (Copy Contents)
+        uses: ./.github/workflows/copy-contents-platform-builder.yaml
         with:
-            json-file-path: './.github/silabs-builds-copy-contents-917soc.json'
-            path-to-example-app: slc/sample-app/onoff-plug-app/siwx917/onoff-plug-app-917-soc.slcp
-            example-app: onoff-plug-app
+            example-app: "fan-control-app"
             build-type: ${{ inputs.build-type }}
-            platform: onoff-plug-app-917soc-copy-contents
+            siwx917-soc-support: true
 
-    air-quality-sensor-app-917soc-copy:
-        name: Air Quality Sensor App 917 SOC (BRD2708A)
-        uses: ./.github/workflows/builder.yaml
-        with:
-            json-file-path: './.github/silabs-builds-copy-contents-917soc.json'
-            path-to-example-app: slc/sample-app/air-quality-sensor-app/siwx917/air-quality-sensor-app-917-soc.slcp
-            example-app: air-quality-sensor-app
-            build-type: ${{ inputs.build-type }}
-            platform: air-quality-sensor-app-917soc-copy-contents
-
-    fan-control-app-917soc-copy:
-        name: Fan Control App 917 SOC (BRD2911A)
-        uses: ./.github/workflows/builder.yaml
-        with:
-            json-file-path: './.github/silabs-builds-copy-contents-917soc.json'
-            path-to-example-app: slc/sample-app/fan-control-app/siwx917/fan-control-app-917-soc.slcp
-            example-app: fan-control-app
-            build-type: ${{ inputs.build-type }}
-            platform: fan-control-app-917soc-copy-contents
-
-    lighting-app-917soc-copy:
-        name: Lighting App 917 SOC (BRD4338A)
-        uses: ./.github/workflows/builder.yaml
-        with:
-            json-file-path: './.github/silabs-builds-copy-contents-917soc.json'
-            path-to-example-app: slc/sample-app/lighting-app/siwx917/lighting-app-917-soc.slcp
-            example-app: lighting-app
-            build-type: ${{ inputs.build-type }}
-            platform: lighting-app-917soc-copy-contents
-
-    refrigerator-app-917soc-copy:
-        name: Refrigerator App 917 SOC (BRD4338A)
-        uses: ./.github/workflows/builder.yaml
-        with:
-            json-file-path: './.github/silabs-builds-copy-contents-917soc.json'
-            path-to-example-app: slc/sample-app/refrigerator-app/siwx917/refrigerator-app-917-soc.slcp
-            example-app: refrigerator-app
-            build-type: ${{ inputs.build-type }}
-            platform: refrigerator-app-917soc-copy-contents
-
-    multi-sensor-app-917soc-copy:
-        name: Multi Sensor App 917 SOC (BRD4343A)
-        uses: ./.github/workflows/builder.yaml
-        with:
-            json-file-path: './.github/silabs-builds-copy-contents-917soc.json'
-            path-to-example-app: slc/sample-app/multi-sensor-app/siwx917/multi-sensor-app-917-soc.slcp
-            example-app: multi-sensor-app
-            build-type: ${{ inputs.build-type }}
-            platform: multi-sensor-app-917soc-copy-contents
-
-    thermostat-917soc-copy:
-        if: ${{ inputs.build-type == 'full' }}
-        name: Thermostat 917 SOC (BRD4342A)
-        uses: ./.github/workflows/builder.yaml
-        with:
-            json-file-path: './.github/silabs-builds-copy-contents-917soc.json'
-            path-to-example-app: slc/sample-app/thermostat/siwx917/thermostat-917-soc.slcp
-            example-app: thermostat
-            build-type: ${{ inputs.build-type }}
-            platform: thermostat-917soc-copy-contents
-
-    lock-app-917soc-copy:
-        if: ${{ inputs.build-type == 'full' }}
-        name: Lock App 917 SOC (BRD4343A)
-        uses: ./.github/workflows/builder.yaml
-        with:
-            json-file-path: './.github/silabs-builds-copy-contents-917soc.json'
-            path-to-example-app: slc/sample-app/lock-app/siwx917/lock-app-917-soc.slcp
-            example-app: lock-app
-            build-type: ${{ inputs.build-type }}
-            platform: lock-app-917soc-copy-contents
-
-    light-switch-app-917soc-copy:
-        if: ${{ inputs.build-type == 'full' }}
-        name: Light Switch App 917 SOC (BRD4342A)
-        uses: ./.github/workflows/builder.yaml
-        with:
-            json-file-path: './.github/silabs-builds-copy-contents-917soc.json'
-            path-to-example-app: slc/sample-app/light-switch-app/siwx917/light-switch-app-917-soc.slcp
-            example-app: light-switch-app
-            build-type: ${{ inputs.build-type }}
-            platform: light-switch-app-917soc-copy-contents
-
-    window-app-917soc-copy:
-        if: ${{ inputs.build-type == 'full' }}
-        name: Window App 917 SOC (BRD4343A)
-        uses: ./.github/workflows/builder.yaml
-        with:
-            json-file-path: './.github/silabs-builds-copy-contents-917soc.json'
-            path-to-example-app: slc/sample-app/window-app/siwx917/window-app-917-soc.slcp
-            example-app: window-app
-            build-type: ${{ inputs.build-type }}
-            platform: window-app-917soc-copy-contents
 

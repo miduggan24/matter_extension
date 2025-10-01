@@ -1,0 +1,92 @@
+name: Copy Contents Platform Builder
+
+on:
+    workflow_call:
+        inputs:
+            example-app:
+                required: true
+                type: string
+            build-type:
+                required: true
+                type: string
+            efr32-thread-support:
+                required: false
+                type: boolean
+                default: false
+            efr32-rs911x-support:
+                required: false
+                type: boolean
+                default: false
+            efr32-wf200-support:
+                required: false
+                type: boolean
+                default: false
+            efr32-917ncp-support:
+                required: false
+                type: boolean
+                default: false
+            siwx917-soc-support:
+                required: false
+                type: boolean
+                default: false
+
+jobs:
+    efr32-thread-copy-job:
+        if: ${{ inputs.efr32-thread-support }}
+        uses: ./.github/workflows/builder.yaml
+        with:
+            json-file-path: './.github/silabs-builds-copy-contents-efr.json'
+            path-to-example-app: slc/sample-app/${{ inputs.example-app }}/efr32/${{ inputs.example-app }}-thread.slcp
+            example-app: ${{ inputs.example-app }}
+            build-type: ${{ inputs.build-type }}
+            platform: ${{ inputs.example-app }}-efr-copy-contents
+
+    efr32-rs911x-copy-job:
+        if: ${{ inputs.efr32-rs911x-support }}
+        uses: ./.github/workflows/builder.yaml
+        with:
+            json-file-path: './.github/silabs-builds-copy-contents-efr.json'
+            path-to-example-app: slc/sample-app/${{ inputs.example-app }}/efr32/${{ inputs.example-app }}-rs911x.slcp
+            example-app: ${{ inputs.example-app }}
+            build-type: ${{ inputs.build-type }}
+            platform: ${{ inputs.example-app }}-rs911x-efr-copy-contents
+
+    efr32-wf200-copy-job:
+        if: ${{ inputs.efr32-wf200-support }}
+        uses: ./.github/workflows/builder.yaml
+        with:
+            json-file-path: './.github/silabs-builds-copy-contents-efr.json'
+            path-to-example-app: slc/sample-app/${{ inputs.example-app }}/efr32/${{ inputs.example-app }}-wf200.slcp
+            example-app: ${{ inputs.example-app }}
+            build-type: ${{ inputs.build-type }}
+            platform: ${{ inputs.example-app }}-wf200-efr-copy-contents
+
+    efr32-917ncp-copy-job:
+        if: ${{ inputs.efr32-917ncp-support }}
+        uses: ./.github/workflows/builder.yaml
+        with:
+            json-file-path: './.github/silabs-builds-copy-contents-efr.json'
+            path-to-example-app: slc/sample-app/${{ inputs.example-app }}/efr32/${{ inputs.example-app }}-917-ncp.slcp
+            example-app: ${{ inputs.example-app }}
+            build-type: ${{ inputs.build-type }}
+            platform: ${{ inputs.example-app }}-917ncp-efr-copy-contents
+
+    efr32-zigbee-copy-job:
+        if: ${{ inputs.efr32-thread-support && inputs.example-app == 'zigbee-matter-light' }}
+        uses: ./.github/workflows/builder.yaml
+        with:
+            json-file-path: './.github/silabs-builds-copy-contents-efr.json'
+            path-to-example-app: slc/sample-app/${{ inputs.example-app }}/efr32/${{ inputs.example-app }}.slcp
+            example-app: ${{ inputs.example-app }}
+            build-type: ${{ inputs.build-type }}
+            platform: ${{ inputs.example-app }}-efr-copy-contents
+
+    siwx917-soc-copy-job:
+        if: ${{ inputs.siwx917-soc-support }}
+        uses: ./.github/workflows/builder.yaml
+        with:
+            json-file-path: './.github/silabs-builds-copy-contents-917soc.json'
+            path-to-example-app: slc/sample-app/${{ inputs.example-app }}/siwx917/${{ inputs.example-app }}-917-soc.slcp
+            example-app: ${{ inputs.example-app }}
+            build-type: ${{ inputs.build-type }}
+            platform: ${{ inputs.example-app }}-917soc-copy-contents
