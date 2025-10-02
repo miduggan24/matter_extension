@@ -12,21 +12,7 @@
                 "boards": ["brd4187c"],
                 "arguments": ["--output_suffix sequential","'--with matter_zigbee_sequential;matter'"] 
             }
-        ],
-        "copy-contents": {
-            "default": [
-                {
-                    "boards": ["brd4187c"],
-                    "arguments": ["--copy-sources"]
-                }
-            ],
-            "zigbee-matter-light": [
-                {
-                    "boards": ["brd4186c", "brd4187c", "brd2601b"],
-                    "arguments": ["--output_suffix sequential", "'--with matter_zigbee_sequential;matter'", "--copy-sources"]
-                }
-            ]
-        }
+        ]
     },
     "full": {
 
@@ -41,21 +27,35 @@
                 "boards": ["brd4186c", "brd4187c", "brd2601b"],
                 "arguments": ["--output_suffix sequential","'--with matter_zigbee_sequential;matter'"] 
             }
+        ]
+    },
+    "copy-contents-standard": {
+        "default": [
+            {
+                "boards": ["brd4187c"],
+                "arguments": ["--copy-sources"]
+            }
         ],
-        "copy-contents": {
-            "default": [
-                {
-                    "boards": ["brd4186c", "brd4187c"],
-                    "arguments": ["--copy-sources"]
-                }
-            ],
-            "zigbee-matter-light": [
-                {
-                    "boards": ["brd4186c", "brd4187c", "brd2601b"],
-                    "arguments": ["--output_suffix sequential", "'--with matter_zigbee_sequential;matter'", "--copy-sources"]
-                }
-            ]
-        }
+        "zigbee-matter-light": [
+            {
+                "boards": ["brd4187c"],
+                "arguments": ["--output_suffix sequential", "'--with matter_zigbee_sequential;matter'", "--copy-sources"]
+            }
+        ]
+    },
+    "copy-contents-full": {
+        "default": [
+            {
+                "boards": ["brd4186c", "brd4187c"],
+                "arguments": ["--copy-sources"]
+            }
+        ],
+        "zigbee-matter-light": [
+            {
+                "boards": ["brd4186c", "brd4187c", "brd2601b"],
+                "arguments": ["--output_suffix sequential", "'--with matter_zigbee_sequential;matter'", "--copy-sources"]
+            }
+        ]
     },
     "custom-sqa": {
         "lock-app" :[

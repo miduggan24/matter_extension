@@ -18,7 +18,7 @@ jobs:
         uses: ./.github/workflows/platform-builder.yaml
         with:
             example-app: "lighting-app"
-            build-type: ${{ inputs.build-type }}
+            build-type: "copy-contents-${{ inputs.build-type }}"
             sixg301-support: true
             mg24-internal-support: false
             mgm24-support: false
@@ -32,7 +32,7 @@ jobs:
         uses: ./.github/workflows/platform-builder.yaml
         with:
             example-app: "air-quality-sensor-app"
-            build-type: ${{ inputs.build-type }}
+            build-type: "copy-contents-${{ inputs.build-type }}"
             mg24-internal-support: false
             mgm24-support: false
             mgm24-internal-support: false
@@ -45,7 +45,7 @@ jobs:
         uses: ./.github/workflows/platform-builder.yaml
         with:
             example-app: "light-switch-app"
-            build-type: ${{ inputs.build-type }}
+            build-type: "copy-contents-${{ inputs.build-type }}"
             mg24-internal-support: false
             mgm24-support: false
             mgm24-internal-support: false
@@ -58,7 +58,7 @@ jobs:
         uses: ./.github/workflows/platform-builder.yaml
         with:
             example-app: "lock-app"
-            build-type: ${{ inputs.build-type }}
+            build-type: "copy-contents-${{ inputs.build-type }}"
             ncp-wf200-support: true
             mg24-internal-support: false
             mgm24-support: false
@@ -72,7 +72,7 @@ jobs:
         uses: ./.github/workflows/platform-builder.yaml
         with:
             example-app: "thermostat"
-            build-type: ${{ inputs.build-type }}
+            build-type: "copy-contents-${{ inputs.build-type }}"
             ncp-rs911x-support: true
             mg24-internal-support: false
             mgm24-support: false
@@ -86,7 +86,7 @@ jobs:
         uses: ./.github/workflows/platform-builder.yaml
         with:
             example-app: "window-app"
-            build-type: ${{ inputs.build-type }}
+            build-type: "copy-contents-${{ inputs.build-type }}"
             ncp-917-support: true
             mg24-internal-support: false
             mgm24-support: false
@@ -100,7 +100,7 @@ jobs:
         uses: ./.github/workflows/platform-builder.yaml
         with:
             example-app: "fan-control-app"
-            build-type: ${{ inputs.build-type }}
+            build-type: "copy-contents-${{ inputs.build-type }}"
             thread-support: false
             mg24-internal-support: false
             mgm24-support: false
@@ -114,7 +114,7 @@ jobs:
         uses: ./.github/workflows/platform-builder.yaml
         with:
             example-app: "multi-sensor-app"
-            build-type: ${{ inputs.build-type }}
+            build-type: "copy-contents-${{ inputs.build-type }}"
             mg24-internal-support: false
             mgm24-support: false
             mgm24-internal-support: false
@@ -127,7 +127,7 @@ jobs:
         uses: ./.github/workflows/platform-builder.yaml
         with:
             example-app: "onoff-plug-app"
-            build-type: ${{ inputs.build-type }}
+            build-type: "copy-contents-${{ inputs.build-type }}"
             mg24-internal-support: false
             mgm24-support: false
             mgm24-internal-support: false
@@ -140,7 +140,7 @@ jobs:
         uses: ./.github/workflows/platform-builder.yaml
         with:
             example-app: "refrigerator-app"
-            build-type: ${{ inputs.build-type }}
+            build-type: "copy-contents-${{ inputs.build-type }}"
             mg24-internal-support: false
             mgm24-support: false
             mgm24-internal-support: false
@@ -153,8 +153,9 @@ jobs:
         uses: ./.github/workflows/platform-builder.yaml
         with:
             example-app: "zigbee-matter-light"
-            build-type: ${{ inputs.build-type }}
+            build-type: "copy-contents-${{ inputs.build-type }}"
             thread-keyword: ""
+            wifi-soc-support: false
             mg24-internal-support: false
             mgm24-support: false
             mgm24-internal-support: false
