@@ -4,6 +4,10 @@
             {
                 "boards": ["brd4187c"],
                 "arguments": [""]
+            },
+            {
+                "boards": ["brd4187c"],
+                "arguments": ["--copy-sources"]
             }
         ]
     },
@@ -12,21 +16,9 @@
             {
                 "boards": ["brd4186c", "brd4187c"],
                 "arguments": [""]
-            }
-        ]
-    },
-    "copy-contents-standard": {
-        "default": [
+            },
             {
-                "boards": ["brd4187c"],
-                "arguments": ["--copy-sources"]
-            }
-        ]
-    },
-    "copy-contents-full": {
-        "default": [
-            {
-                "boards": ["brd4187c"],
+                "boards": ["brd4186c", "brd4187c"],
                 "arguments": ["--copy-sources"]
             }
         ]
