@@ -26,6 +26,7 @@ jobs:
             mg26-support: false 
             mg26-internal-support: false 
             mgm26-support: false
+            mgm26-internal-support: false 
 
     build-air-quality-sensor-app:
         name: Build Air Quality Sensor App Copy Contents
@@ -39,6 +40,7 @@ jobs:
             mg26-support: false 
             mg26-internal-support: false 
             mgm26-support: false
+            mgm26-internal-support: false
 
     build-light-switch-app:
         name: Build Light Switch App Copy Contents
@@ -52,6 +54,7 @@ jobs:
             mg26-support: false 
             mg26-internal-support: false 
             mgm26-support: false
+            mgm26-internal-support: false
 
     build-lock-app:
         name: Build Lock App Copy Contents
@@ -66,6 +69,7 @@ jobs:
             mg26-support: false 
             mg26-internal-support: false 
             mgm26-support: false
+            mgm26-internal-support: false
 
     build-thermostat-app:
         name: Build Thermostat App Copy Contents
@@ -80,6 +84,7 @@ jobs:
             mg26-support: false 
             mg26-internal-support: false 
             mgm26-support: false
+            mgm26-internal-support: false
 
     build-window-app:
         name: Build Window App Copy Contents
@@ -94,6 +99,7 @@ jobs:
             mg26-support: false 
             mg26-internal-support: false 
             mgm26-support: false
+            mgm26-internal-support: false
 
     build-fan-control-app:
         name: Build Fan Control App Copy Contents
@@ -108,6 +114,7 @@ jobs:
             mg26-support: false 
             mg26-internal-support: false 
             mgm26-support: false
+            mgm26-internal-support: false
 
     build-multi-sensor-app:
         name: Build Multi Sensor App Copy Contents
@@ -121,6 +128,7 @@ jobs:
             mg26-support: false 
             mg26-internal-support: false 
             mgm26-support: false
+            mgm26-internal-support: false
 
     build-onoff-plug-app:
         name: Build OnOff Plug App Copy Contents
@@ -134,6 +142,7 @@ jobs:
             mg26-support: false 
             mg26-internal-support: false 
             mgm26-support: false
+            mgm26-internal-support: false
 
     build-refrigerator-app:
         name: Build Refrigerator App Copy Contents
@@ -147,6 +156,7 @@ jobs:
             mg26-support: false 
             mg26-internal-support: false 
             mgm26-support: false
+            mgm26-internal-support: false
 
     build-zigbee-matter-light-app:
         name: Build Zigbee Matter Light App Copy Contents
@@ -162,3 +172,4 @@ jobs:
             mg26-support: false 
             mg26-internal-support: false 
             mgm26-support: false
+            mgm26-internal-support: false
