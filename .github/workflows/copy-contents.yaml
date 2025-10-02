@@ -1,0 +1,163 @@
+name: Copy Contents
+
+on:
+    workflow_call:
+        inputs:
+            build-type:
+                required: true
+                type: string
+
+concurrency:
+    group: copy-contents-build-examples-${{ github.ref }}
+    cancel-in-progress: true
+
+jobs:
+
+    build-lighting-app:
+        name: Build Lighting App Copy Contents
+        uses: ./.github/workflows/platform-builder.yaml
+        with:
+            example-app: "lighting-app"
+            build-type: ${{ inputs.build-type }}
+            sixg301-support: true
+            mg24-internal-support: false
+            mgm24-support: false
+            mgm24-internal-support: false
+            mg26-support: false 
+            mg26-internal-support: false 
+            mgm26-support: false
+
+    build-air-quality-sensor-app:
+        name: Build Air Quality Sensor App Copy Contents
+        uses: ./.github/workflows/platform-builder.yaml
+        with:
+            example-app: "air-quality-sensor-app"
+            build-type: ${{ inputs.build-type }}
+            mg24-internal-support: false
+            mgm24-support: false
+            mgm24-internal-support: false
+            mg26-support: false 
+            mg26-internal-support: false 
+            mgm26-support: false
+
+    build-light-switch-app:
+        name: Build Light Switch App Copy Contents
+        uses: ./.github/workflows/platform-builder.yaml
+        with:
+            example-app: "light-switch-app"
+            build-type: ${{ inputs.build-type }}
+            mg24-internal-support: false
+            mgm24-support: false
+            mgm24-internal-support: false
+            mg26-support: false 
+            mg26-internal-support: false 
+            mgm26-support: false
+
+    build-lock-app:
+        name: Build Lock App Copy Contents
+        uses: ./.github/workflows/platform-builder.yaml
+        with:
+            example-app: "lock-app"
+            build-type: ${{ inputs.build-type }}
+            ncp-wf200-support: true
+            mg24-internal-support: false
+            mgm24-support: false
+            mgm24-internal-support: false
+            mg26-support: false 
+            mg26-internal-support: false 
+            mgm26-support: false
+
+    build-thermostat-app:
+        name: Build Thermostat App Copy Contents
+        uses: ./.github/workflows/platform-builder.yaml
+        with:
+            example-app: "thermostat"
+            build-type: ${{ inputs.build-type }}
+            ncp-rs911x-support: true
+            mg24-internal-support: false
+            mgm24-support: false
+            mgm24-internal-support: false
+            mg26-support: false 
+            mg26-internal-support: false 
+            mgm26-support: false
+
+    build-window-app:
+        name: Build Window App Copy Contents
+        uses: ./.github/workflows/platform-builder.yaml
+        with:
+            example-app: "window-app"
+            build-type: ${{ inputs.build-type }}
+            ncp-917-support: true
+            mg24-internal-support: false
+            mgm24-support: false
+            mgm24-internal-support: false
+            mg26-support: false 
+            mg26-internal-support: false 
+            mgm26-support: false
+
+    build-fan-control-app:
+        name: Build Fan Control App Copy Contents
+        uses: ./.github/workflows/platform-builder.yaml
+        with:
+            example-app: "fan-control-app"
+            build-type: ${{ inputs.build-type }}
+            thread-support: false
+            mg24-internal-support: false
+            mgm24-support: false
+            mgm24-internal-support: false
+            mg26-support: false 
+            mg26-internal-support: false 
+            mgm26-support: false
+
+    build-multi-sensor-app:
+        name: Build Multi Sensor App Copy Contents
+        uses: ./.github/workflows/platform-builder.yaml
+        with:
+            example-app: "multi-sensor-app"
+            build-type: ${{ inputs.build-type }}
+            mg24-internal-support: false
+            mgm24-support: false
+            mgm24-internal-support: false
+            mg26-support: false 
+            mg26-internal-support: false 
+            mgm26-support: false
+
+    build-onoff-plug-app:
+        name: Build OnOff Plug App Copy Contents
+        uses: ./.github/workflows/platform-builder.yaml
+        with:
+            example-app: "onoff-plug-app"
+            build-type: ${{ inputs.build-type }}
+            mg24-internal-support: false
+            mgm24-support: false
+            mgm24-internal-support: false
+            mg26-support: false 
+            mg26-internal-support: false 
+            mgm26-support: false
+
+    build-refrigerator-app:
+        name: Build Refrigerator App Copy Contents
+        uses: ./.github/workflows/platform-builder.yaml
+        with:
+            example-app: "refrigerator-app"
+            build-type: ${{ inputs.build-type }}
+            mg24-internal-support: false
+            mgm24-support: false
+            mgm24-internal-support: false
+            mg26-support: false 
+            mg26-internal-support: false 
+            mgm26-support: false
+
+    build-zigbee-matter-light-app:
+        name: Build Zigbee Matter Light App Copy Contents
+        uses: ./.github/workflows/platform-builder.yaml
+        with:
+            example-app: "zigbee-matter-light"
+            build-type: ${{ inputs.build-type }}
+            thread-keyword: ""
+            mg24-internal-support: false
+            mgm24-support: false
+            mgm24-internal-support: false
+            mg26-support: false 
+            mg26-internal-support: false 
+            mgm26-support: false

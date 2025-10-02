@@ -5,7 +5,15 @@
                 "boards": ["brd4187c"],
                 "arguments": [""]
             }
-        ]
+        ],
+        "copy-contents": {
+            "default": [
+                {
+                    "boards": ["brd4187c"],
+                    "arguments": ["--copy-sources"]
+                }
+            ]
+        }
     },
     "full": {
         "default": [
@@ -13,6 +21,14 @@
                 "boards": ["brd4186c", "brd4187c"],
                 "arguments": [""]
             }
-        ]
+        ],
+        "copy-contents": {
+            "default": [
+                {
+                    "boards": ["brd4187c"],
+                    "arguments": ["--copy-sources"]
+                }
+            ]
+        }
     } 
 }
