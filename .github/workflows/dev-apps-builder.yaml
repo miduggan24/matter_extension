@@ -2,7 +2,7 @@ name: Build Dev apps
 
 on:
     schedule:
-        - cron: '12 5 * * *'  # test trigger in github
+        - cron: '20 17 * * *'  # test trigger at 1:20 PM EST (6:20 PM UTC)
     push:
         branches:
             - main
