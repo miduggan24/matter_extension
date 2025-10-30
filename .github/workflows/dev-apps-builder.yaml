@@ -40,7 +40,7 @@ jobs:
                       echo "build-type=full" >> $GITHUB_OUTPUT
                   elif [[ "${{ github.event_name }}" == "pull_request" ]]; then
                       echo "build-type=standard" >> $GITHUB_OUTPUT
-                  elif [[ "${{ github.event_name }}" == "pull_request" ]]; then
+                  elif [[ "${{ github.event_name }}" == "push" ]]; then
                       echo "build-type=full" >> $GITHUB_OUTPUT # Temp full build for testing
                   fi
 
