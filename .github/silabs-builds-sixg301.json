@@ -54,7 +54,7 @@
             },
             {
                 "boards": ["brd1019a", "brd4407a"],
-                "arguments": ["--output_suffix sequential-lto", "'--with matter_zigbee_sequential;matter,matter_no_debug;matter,toolchain_gcc_lto'", "'--without matter_shell;matter,matter_qr_code;matter,matter_lcd;matter'"],
+                "arguments": ["--output_suffix sequential-lto", "'--with matter_zigbee_sequential;matter,matter_no_debug;matter,toolchain_gcc_lto'", "'--without matter_shell;matter,matter_qr_code;matter,matter_lcd;matter'", "-pids application"],
                 "projectFileType": "slcp"
             }
         ],
