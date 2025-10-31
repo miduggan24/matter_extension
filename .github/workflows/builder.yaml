@@ -6,7 +6,10 @@ on:
             json-file-path:
                 required: true
                 type: string
-            path-to-example-app:
+            slcp-path:
+                required: true
+                type: string
+            slcw-path:
                 required: true
                 type: string
             example-app:
@@ -58,7 +61,8 @@ jobs:
               uses: SiliconLabsSoftware/matter_build_action@feature/project_types # Feature branch with project type input
               with:
                   json-file-path: ${{ inputs.json-file-path }}
-                  path-to-example-app: ${{ inputs.path-to-example-app }}
+                  slcp-path: ${{ inputs.slcp-path }}
+                  slcw-path: ${{ inputs.slcw-path }}
                   example-app: ${{ inputs.example-app }}
                   build-script: "./slc/build.sh"
                   output-directory: " "
