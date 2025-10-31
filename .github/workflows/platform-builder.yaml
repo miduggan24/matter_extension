@@ -72,7 +72,8 @@ jobs:
         uses: ./.github/workflows/builder.yaml
         with:
             json-file-path: './.github/silabs-builds-mg24.json'
-            path-to-example-app: slc/apps/${{ inputs.example-app }}/thread/${{ inputs.example-app }}-series-2.{{projectFileType}}
+            slcp-path: slc/apps/${{ inputs.example-app }}/thread/${{ inputs.example-app }}.slcp
+            slcw-path: slc/apps/${{ inputs.example-app }}/thread/${{ inputs.example-app }}-series-2.slcw
             example-app: ${{ inputs.example-app }}
             build-type: ${{ inputs.build-type }}
             platform: mg24
@@ -82,7 +83,8 @@ jobs:
         uses: ./.github/workflows/builder.yaml
         with:
             json-file-path: './.github/silabs-builds-mg24-internal.json'
-            path-to-example-app: slc/apps/${{ inputs.example-app }}/thread/${{ inputs.example-app }}-series-2-internal.{{projectFileType}}
+            slcp-path: slc/apps/${{ inputs.example-app }}/thread/${{ inputs.example-app }}.slcp
+            slcw-path: slc/apps/${{ inputs.example-app }}/thread/${{ inputs.example-app }}-series-2-internal.slcw
             example-app: ${{ inputs.example-app }}
             build-type: ${{ inputs.build-type }}
             platform: mg24-internal
@@ -92,7 +94,8 @@ jobs:
         uses: ./.github/workflows/builder.yaml
         with:
             json-file-path: './.github/silabs-builds-mgm24.json'
-            path-to-example-app: slc/apps/${{ inputs.example-app }}/thread/${{ inputs.example-app }}-series-2.{{projectFileType}}
+            slcp-path: slc/apps/${{ inputs.example-app }}/thread/${{ inputs.example-app }}.slcp
+            slcw-path: slc/apps/${{ inputs.example-app }}/thread/${{ inputs.example-app }}-series-2.slcw
             example-app: ${{ inputs.example-app }}
             build-type: ${{ inputs.build-type }}
             platform: mgm24
@@ -102,7 +105,8 @@ jobs:
         uses: ./.github/workflows/builder.yaml
         with:
             json-file-path: './.github/silabs-builds-mgm24-internal.json'
-            path-to-example-app: slc/apps/${{ inputs.example-app }}/thread/${{ inputs.example-app }}-series-2-internal.{{projectFileType}}
+            slcp-path: slc/apps/${{ inputs.example-app }}/thread/${{ inputs.example-app }}.slcp
+            slcw-path: slc/apps/${{ inputs.example-app }}/thread/${{ inputs.example-app }}-series-2-internal.slcw
             example-app: ${{ inputs.example-app }}
             build-type: ${{ inputs.build-type }}
             platform: mgm24-internal
@@ -112,7 +116,8 @@ jobs:
         uses: ./.github/workflows/builder.yaml
         with:
             json-file-path: './.github/silabs-builds-mg26.json'
-            path-to-example-app: slc/apps/${{ inputs.example-app }}/thread/${{ inputs.example-app }}-series-2.{{projectFileType}}
+            slcp-path: slc/apps/${{ inputs.example-app }}/thread/${{ inputs.example-app }}.slcp
+            slcw-path: slc/apps/${{ inputs.example-app }}/thread/${{ inputs.example-app }}-series-2.slcw
             example-app: ${{ inputs.example-app }}
             build-type: ${{ inputs.build-type }}
             platform: mg26
@@ -122,7 +127,8 @@ jobs:
         uses: ./.github/workflows/builder.yaml
         with:
             json-file-path: './.github/silabs-builds-mg26-internal.json'
-            path-to-example-app: slc/apps/${{ inputs.example-app }}/thread/${{ inputs.example-app }}-series-2-internal.{{projectFileType}}
+            slcp-path: slc/apps/${{ inputs.example-app }}/thread/${{ inputs.example-app }}.slcp
+            slcw-path: slc/apps/${{ inputs.example-app }}/thread/${{ inputs.example-app }}-series-2-internal.slcw
             example-app: ${{ inputs.example-app }}
             build-type: ${{ inputs.build-type }}
             platform: mg26-internal
@@ -132,7 +138,8 @@ jobs:
         uses: ./.github/workflows/builder.yaml
         with:
             json-file-path: './.github/silabs-builds-mgm26-internal.json'
-            path-to-example-app: slc/apps/${{ inputs.example-app }}/thread/${{ inputs.example-app }}-series-2-internal.{{projectFileType}}
+            slcp-path: slc/apps/${{ inputs.example-app }}/thread/${{ inputs.example-app }}.slcp
+            slcw-path: slc/apps/${{ inputs.example-app }}/thread/${{ inputs.example-app }}-series-2-internal.slcw
             example-app: ${{ inputs.example-app }}
             build-type: ${{ inputs.build-type }}
             platform: mgm26-internal
@@ -142,7 +149,8 @@ jobs:
         uses: ./.github/workflows/builder.yaml
         with:
             json-file-path: './.github/silabs-builds-ncp.json'
-            path-to-example-app: slc/apps/${{ inputs.example-app }}/wifi/${{ inputs.example-app }}-917-ncp.{{projectFileType}}
+            slcp-path: slc/apps/${{ inputs.example-app }}/wifi/${{ inputs.example-app }}-917-ncp.slcp
+            slcw-path: slc/apps/${{ inputs.example-app }}/wifi/${{ inputs.example-app }}-917-ncp.slcw
             example-app: ${{ inputs.example-app }}
             build-type: ${{ inputs.build-type }}
             platform: ncp-917
@@ -152,7 +160,8 @@ jobs:
         uses: ./.github/workflows/builder.yaml
         with:
             json-file-path: './.github/silabs-builds-ncp.json'
-            path-to-example-app: slc/apps/${{ inputs.example-app }}/wifi/${{ inputs.example-app }}-wf200.{{projectFileType}}
+            slcp-path: slc/apps/${{ inputs.example-app }}/wifi/${{ inputs.example-app }}-wf200.slcp
+            slcw-path: slc/apps/${{ inputs.example-app }}/wifi/${{ inputs.example-app }}-wf200.slcw
             example-app: ${{ inputs.example-app }}
             build-type: ${{ inputs.build-type }}
             platform: ncp-wf200
@@ -162,7 +171,8 @@ jobs:
         uses: ./.github/workflows/builder.yaml
         with:
             json-file-path: './.github/silabs-builds-siwx.json'
-            path-to-example-app: slc/apps/${{ inputs.example-app }}/wifi/${{ inputs.example-app }}-siwx.{{projectFileType}}
+            slcp-path: slc/apps/${{ inputs.example-app }}/wifi/${{ inputs.example-app }}-siwx.slcp
+            slcw-path: slc/apps/${{ inputs.example-app }}/wifi/${{ inputs.example-app }}-siwx.slcw
             example-app: ${{ inputs.example-app }}
             build-type: ${{ inputs.build-type }}
             platform: siwx-soc
@@ -172,7 +182,8 @@ jobs:
         uses: ./.github/workflows/builder.yaml
         with:
             json-file-path: './.github/silabs-builds-sixg301.json'
-            path-to-example-app: slc/apps/${{ inputs.example-app }}/thread/${{ inputs.example-app }}-series-3.{{projectFileType}}
+            slcp-path: slc/apps/${{ inputs.example-app }}/thread/${{ inputs.example-app }}.slcp
+            slcw-path: slc/apps/${{ inputs.example-app }}/thread/${{ inputs.example-app }}-series-3.slcw
             example-app: ${{ inputs.example-app }}
             build-type: ${{ inputs.build-type }}
             platform: sixg301
