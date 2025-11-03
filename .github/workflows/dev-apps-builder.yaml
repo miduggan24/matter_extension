@@ -44,7 +44,7 @@ jobs:
                   
                   # For scheduled runs, check if there are commits in the last 6 minutes (buffer for cron timing)
                   SINCE_TIME=$(date -u -d '6 minutes ago' '+%Y-%m-%dT%H:%M:%SZ')
-                  RECENT_COMMITS=$(git log --since="$SINCE_TIME" --oneline --count)
+                  RECENT_COMMITS=$(git rev-list --count --since="$SINCE_TIME" HEAD)
                   
                   if [[ $RECENT_COMMITS -gt 0 ]]; then
                       echo "should-run=true" >> $GITHUB_OUTPUT
