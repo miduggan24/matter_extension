@@ -42,16 +42,16 @@ jobs:
                       exit 0
                   fi
                   
-                  # For scheduled runs, check if there are commits in the last 24 hours
-                  SINCE_TIME=$(date -u -d '24 hours ago' '+%Y-%m-%dT%H:%M:%SZ')
+                  # For scheduled runs, check if there are commits in the last 6 minutes (buffer for cron timing)
+                  SINCE_TIME=$(date -u -d '6 minutes ago' '+%Y-%m-%dT%H:%M:%SZ')
                   RECENT_COMMITS=$(git log --since="$SINCE_TIME" --oneline --count)
                   
                   if [[ $RECENT_COMMITS -gt 0 ]]; then
                       echo "should-run=true" >> $GITHUB_OUTPUT
-                      echo "Found $RECENT_COMMITS commits in the last 24 hours, running workflow"
+                      echo "Found $RECENT_COMMITS commits in the last 6 minutes, running workflow"
                   else
                       echo "should-run=false" >> $GITHUB_OUTPUT
-                      echo "No commits in the last 24 hours, skipping workflow"
+                      echo "No commits in the last 6 minutes, skipping workflow"
                   fi
 
     no-changes-detected:
@@ -61,8 +61,8 @@ jobs:
         steps:
             - name: No changes detected
               run: |
-                  echo "::notice::No commits found in the last 24 hours. Skipping scheduled build to avoid unnecessary resource usage."
-                  echo "The workflow will run again on the next scheduled time if changes are detected."
+                  echo "::notice::No commits found in the last 6 minutes. Skipping scheduled build to avoid unnecessary resource usage."
+                  echo "The workflow will run again in 5 minutes if changes are detected."
 
     set-build-type:
         runs-on: ubuntu-latest
