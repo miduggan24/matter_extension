@@ -48,6 +48,15 @@
 #   ./slc/build.sh slc/solutions/thermostat/series-2/thermostat-917-ncp-bootloader.slcw brd4187c --without_bootloader '<component1>,<component2>'
 #       output in: out/brd4187c/thermostat-917-ncp-solution/
 #
+#   -pids option : Allows to build only specific parts of a solution (.slcw) project. If provided for .slcp file, silently ignored.
+#   Valid arguments: 'bootloader' or 'application'
+#   Example bootloader-only build:
+#   ./slc/build.sh slc/apps/lighting-app/thread/lighting-app-series-2.slcw brd4187c -pids bootloader
+#       output in: out/brd4187c/lighting-app-solution/ (builds only bootloader)
+#   Example application-only build:
+#   ./slc/build.sh slc/apps/lighting-app/thread/lighting-app-series-2.slcw brd4187c -pids application
+#       output in: out/brd4187c/lighting-app-solution/ (builds only application)
+#
 
 # Helper functions to build component arguments
 build_with_arg() {
@@ -227,11 +236,9 @@ while [ $# -gt 0 ]; do
 	-pids)
 		PIDS_ARG="$2"
 		if [ "$PIDS_ARG" = "bootloader" ]; then
-			GENERATE_BOOTLOADER=true
 			GENERATE_APPLICATION=false
 		elif [ "$PIDS_ARG" = "application" ]; then
 			GENERATE_BOOTLOADER=false
-			GENERATE_APPLICATION=true
 		else
 			echo "ERROR: Invalid -pids argument: $PIDS_ARG. Must be 'bootloader' or 'application'"
 			exit 1
@@ -343,8 +350,12 @@ fi
 if [ "$GENERATE_BOOTLOADER" = true ] && [ "$GENERATE_APPLICATION" = false ]; then
 	# Use bootloader makefile instead of solution makefile
 	echo "Building bootloader only..."
-	# Find the bootloader makefile (handles both internal and external bootloaders)
+	# Find the bootloader makefile
 	BOOTLOADER_MAKEFILE=$(find $OUTPUT_DIR/matter-bootloader -maxdepth 1 -name "*.Makefile" | head -1)
+	if [ -z "$BOOTLOADER_MAKEFILE" ]; then
+		echo "Error: No bootloader Makefile found in $OUTPUT_DIR/matter-bootloader"
+		exit 1
+	fi
 	BOOTLOADER_MAKEFILE_NAME=$(basename "$BOOTLOADER_MAKEFILE")
 	make all -C $OUTPUT_DIR/matter-bootloader -f $BOOTLOADER_MAKEFILE_NAME -j13
 elif [ "$GENERATE_BOOTLOADER" = false ] && [ "$GENERATE_APPLICATION" = true ]; then
@@ -352,6 +363,10 @@ elif [ "$GENERATE_BOOTLOADER" = false ] && [ "$GENERATE_APPLICATION" = true ]; t
 	echo "Building application only..."
 	# Find the application makefile
 	APP_MAKEFILE=$(find $OUTPUT_DIR -mindepth 2 -maxdepth 2 -name "*.Makefile" ! -name "*.solution.Makefile" | head -1)
+	if [ -z "$APP_MAKEFILE" ]; then
+		echo "ERROR: No application Makefile found in $OUTPUT_DIR"
+		exit 1
+	fi
 	APP_DIR=$(dirname "$APP_MAKEFILE")
 	APP_MAKEFILE_NAME=$(basename "$APP_MAKEFILE")
 	make all -C $APP_DIR -f $APP_MAKEFILE_NAME -j13
