@@ -48,15 +48,6 @@
 #   ./slc/build.sh slc/solutions/thermostat/series-2/thermostat-917-ncp-bootloader.slcw brd4187c --without_bootloader '<component1>,<component2>'
 #       output in: out/brd4187c/thermostat-917-ncp-solution/
 #
-#   -pids option : Allows to build only specific parts of a solution (.slcw) project. If provided for .slcp file, silently ignored.
-#   Valid arguments: 'bootloader' or 'application'
-#   Example bootloader-only build:
-#   ./slc/build.sh slc/apps/lighting-app/thread/lighting-app-series-2.slcw brd4187c -pids bootloader
-#       output in: out/brd4187c/lighting-app-solution/ (builds only bootloader component)
-#   Example application-only build:
-#   ./slc/build.sh slc/apps/lighting-app/thread/lighting-app-series-2.slcw brd4187c -pids application
-#       output in: out/brd4187c/lighting-app-solution/ (builds only application component)
-#
 
 # Helper functions to build component arguments
 build_with_arg() {
@@ -352,7 +343,10 @@ fi
 if [ "$GENERATE_BOOTLOADER" = true ] && [ "$GENERATE_APPLICATION" = false ]; then
 	# Use bootloader makefile instead of solution makefile
 	echo "Building bootloader only..."
-	make all -C $OUTPUT_DIR/matter-bootloader -f matter-bootloader-storage-external-single.Makefile -j13
+	# Find the bootloader makefile (handles both internal and external bootloaders)
+	BOOTLOADER_MAKEFILE=$(find $OUTPUT_DIR/matter-bootloader -maxdepth 1 -name "*.Makefile" | head -1)
+	BOOTLOADER_MAKEFILE_NAME=$(basename "$BOOTLOADER_MAKEFILE")
+	make all -C $OUTPUT_DIR/matter-bootloader -f $BOOTLOADER_MAKEFILE_NAME -j13
 elif [ "$GENERATE_BOOTLOADER" = false ] && [ "$GENERATE_APPLICATION" = true ]; then
 	# Use application makefile instead of solution makefile
 	echo "Building application only..."
