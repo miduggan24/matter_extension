@@ -4,8 +4,6 @@ on:
     push: # Temp for testing 
         branches:
             - main
-    schedule:
-        - cron: '0 22 * * *' # 6 pm EST daily
     pull_request:
         branches:
             - main
