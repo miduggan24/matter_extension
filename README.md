@@ -252,5 +252,3 @@ Note: Matter requires an up-to-date version of the ZAP tool. To make sure that y
 
 Matter is released under the [Apache 2.0 license](./LICENSE).
 
-# Testing commit
-# Test 2
