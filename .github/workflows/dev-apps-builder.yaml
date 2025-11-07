@@ -74,7 +74,7 @@ jobs:
 
     build-lighting-app:
         name: Build Lighting App
-        needs: [check-changes, set-build-type]
+        needs: [set-build-type]
         uses: ./.github/workflows/platform-builder.yaml
         with:
             example-app: "lighting-app"
@@ -82,7 +82,7 @@ jobs:
 
     build-air-quality-sensor-app:
         name: Build Air Quality Sensor App
-        needs: [check-changes, set-build-type]
+        needs: [set-build-type]
         uses: ./.github/workflows/platform-builder.yaml
         with:
             example-app: "air-quality-sensor-app"
@@ -90,14 +90,14 @@ jobs:
 
     build-light-switch-app:
         name: Build Light Switch App
-        needs: [check-changes, set-build-type]
+        needs: [set-build-type]
         uses: ./.github/workflows/platform-builder.yaml
         with:
             example-app: "light-switch-app"
             build-type: ${{ needs.set-build-type.outputs.build-type }}
     build-lock-app:
         name: Build Lock App
-        needs: [check-changes, set-build-type]
+        needs: [set-build-type]
         uses: ./.github/workflows/platform-builder.yaml
         with:
             example-app: "lock-app"
@@ -107,7 +107,7 @@ jobs:
 
     build-thermostat-app:
         name: Build Thermostat App
-        needs: [check-changes, set-build-type]
+        needs: [set-build-type]
         uses: ./.github/workflows/platform-builder.yaml
         with:
             example-app: "thermostat"
@@ -117,7 +117,7 @@ jobs:
 
     build-window-app:
         name: Build Window App
-        needs: [check-changes, set-build-type]
+        needs: [set-build-type]
         uses: ./.github/workflows/platform-builder.yaml
         with:
             example-app: "window-app"
@@ -126,7 +126,7 @@ jobs:
 
     build-fan-control-app:
         name: Build Fan Control App
-        needs: [check-changes, set-build-type]
+        needs: [set-build-type]
         uses: ./.github/workflows/platform-builder.yaml
         with:
             example-app: "fan-control-app"
@@ -135,7 +135,7 @@ jobs:
 
     build-closure-app:
         name: Build Closure App
-        needs: [check-changes, set-build-type]
+        needs: [set-build-type]
         uses: ./.github/workflows/platform-builder.yaml
         with:
             example-app: "closure-app"
@@ -143,7 +143,7 @@ jobs:
 
     build-multi-sensor-app:
         name: Build Multi Sensor App
-        needs: [check-changes, set-build-type]
+        needs: [set-build-type]
         uses: ./.github/workflows/platform-builder.yaml
         with:
             example-app: "multi-sensor-app"
@@ -151,7 +151,7 @@ jobs:
 
     build-onoff-plug-app:
         name: Build OnOff Plug App
-        needs: [check-changes, set-build-type]
+        needs: [set-build-type]
         uses: ./.github/workflows/platform-builder.yaml
         with:
             example-app: "onoff-plug-app"
@@ -159,7 +159,7 @@ jobs:
 
     build-refrigerator-app:
         name: Build Refrigerator App
-        needs: [check-changes, set-build-type]
+        needs: [set-build-type]
         uses: ./.github/workflows/platform-builder.yaml
         with:
             example-app: "refrigerator-app"
@@ -167,7 +167,7 @@ jobs:
 
     build-performance-test-app:
         name: Build Performance Test App
-        needs: [check-changes, set-build-type]
+        needs: [set-build-type]
         uses: ./.github/workflows/platform-builder.yaml
         with:
             example-app: "performance-test-app"
@@ -176,7 +176,7 @@ jobs:
 
     build-zigbee-matter-light-app:
         name: Build Zigbee Matter Light App
-        needs: [check-changes, set-build-type]
+        needs: [set-build-type]
         uses: ./.github/workflows/platform-builder.yaml
         with:
             example-app: "zigbee-matter-light"
@@ -189,7 +189,7 @@ jobs:
 
     build-platform-app:
         name: Build Platform App
-        needs: [check-changes, set-build-type]
+        needs: [set-build-type]
         uses: ./.github/workflows/platform-builder.yaml
         with:
             example-app: "platform-app"
@@ -197,7 +197,7 @@ jobs:
 
     build-sqa-tools:
         name: Build SQA Tools
-        needs: [check-changes, set-build-type]
+        needs: [set-build-type]
         uses: ./.github/workflows/sqa-tools-builder.yaml
         with:
             build-type: ${{ needs.set-build-type.outputs.build-type }}
