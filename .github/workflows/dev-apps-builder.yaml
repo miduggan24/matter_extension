@@ -1,9 +1,7 @@
-name: Build Dev apps
-
+name: Build Dev apps # Testing commit 
 on:
-    push: # Temp for testing 
-        branches:
-            - main
+    schedule:
+        - cron: '*/5 * * * *' # Every 5 minutes (for testing - change back to '0 22 * * *' for daily at 6 pm EST)
     pull_request:
         branches:
             - main
@@ -24,8 +22,42 @@ concurrency:
     cancel-in-progress: true
 
 jobs:
+    check-changes:
+        runs-on: ubuntu-latest
+        outputs:
+            should-run: ${{ steps.check-changes.outputs.should-run }}
+        steps:
+            - name: Checkout repository
+              uses: actions/checkout@v4
+              with:
+                  fetch-depth: 0
+
+            - name: Check for changes since last run
+              id: check-changes
+              run: |
+                  # Always run for non-scheduled events (PR, workflow_dispatch)
+                  if [[ "${{ github.event_name }}" != "schedule" ]]; then
+                      echo "should-run=true" >> $GITHUB_OUTPUT
+                      echo "Non-scheduled event, running workflow"
+                      exit 0
+                  fi
+                  
+                  # For scheduled runs, check if there are commits in the last 5 minutes (for testing - change back to '24 hours ago' for production)
+                  SINCE_TIME=$(date -u -d '5 minutes ago' '+%Y-%m-%dT%H:%M:%SZ')
+                  RECENT_COMMITS=$(git rev-list --count --since="$SINCE_TIME" HEAD)
+                  
+                  if [[ $RECENT_COMMITS -gt 0 ]]; then
+                      echo "should-run=true" >> $GITHUB_OUTPUT
+                      echo "Found $RECENT_COMMITS commits in the last 5 minutes, running workflow"
+                  else
+                      echo "should-run=false" >> $GITHUB_OUTPUT
+                      echo "No commits in the last 5 minutes, skipping workflow"
+                  fi
+
     set-build-type:
         runs-on: ubuntu-latest
+        needs: check-changes
+        if: needs.check-changes.outputs.should-run == 'true'
         outputs:
             build-type: ${{ steps.set-build-type.outputs.build-type }}
         steps:
@@ -38,8 +70,6 @@ jobs:
                       echo "build-type=full" >> $GITHUB_OUTPUT
                   elif [[ "${{ github.event_name }}" == "pull_request" ]]; then
                       echo "build-type=standard" >> $GITHUB_OUTPUT
-                  elif [[ "${{ github.event_name }}" == "push" ]]; then
-                      echo "build-type=full" >> $GITHUB_OUTPUT # Temp full build for testing
                   fi
 
     build-lighting-app:
@@ -176,6 +206,7 @@ jobs:
         name: Merge App Artifacts
         runs-on: ubuntu-latest
         needs:
+            - check-changes
             - set-build-type
             - build-sqa-tools
             - build-lighting-app
@@ -192,7 +223,7 @@ jobs:
             - build-platform-app
             - build-zigbee-matter-light-app
             - build-closure-app
-        if: success()
+        if: success() && needs.check-changes.outputs.should-run == 'true'
 
         steps:
             - name: Merge artifacts
@@ -201,25 +232,6 @@ jobs:
                   name: "dev-artifacts-${{ needs.set-build-type.outputs.build-type }}"
                   delete-merged: true
                   pattern: "*-${{ needs.set-build-type.outputs.build-type }}"
-
-            - name: Merge map file artifacts
-              if: ${{ needs.set-build-type.outputs.build-type == 'full' }}
-              uses: actions/upload-artifact/merge@v4
-              with:
-                name: "dev-map-files"
-                delete-merged: true
-                pattern: "*-${{ needs.set-build-type.outputs.build-type }}-map-files"
-
-    code-size-analysis:
-        name: Code Size Analysis
-        needs: 
-            - set-build-type
-            - merge-apps
-        if: ${{ needs.set-build-type.outputs.build-type == 'full' }}
-        uses: ./.github/workflows/code-size-analysis.yaml
-        with:
-            build-type: ${{ needs.set-build-type.outputs.build-type }}
-            artifact-name: "dev-map-files"
 
     wait-for-test-results:
         name: Wait for Test Results
