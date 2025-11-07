@@ -42,16 +42,16 @@ jobs:
                       exit 0
                   fi
                   
-                  # For scheduled runs, check if there are commits in the last 5 minutes (for testing - change back to '24 hours ago' for production)
-                  SINCE_TIME=$(date -u -d '5 minutes ago' '+%Y-%m-%dT%H:%M:%SZ')
+                  # For scheduled runs, check if there are commits in the last hour (for testing - change back to '24 hours ago' for production)
+                  SINCE_TIME=$(date -u -d '1 hour ago' '+%Y-%m-%dT%H:%M:%SZ')
                   RECENT_COMMITS=$(git rev-list --count --since="$SINCE_TIME" HEAD)
                   
                   if [[ $RECENT_COMMITS -gt 0 ]]; then
                       echo "should-run=true" >> $GITHUB_OUTPUT
-                      echo "Found $RECENT_COMMITS commits in the last 5 minutes, running workflow"
+                      echo "Found $RECENT_COMMITS commits in the last hour, running workflow"
                   else
                       echo "should-run=false" >> $GITHUB_OUTPUT
-                      echo "No commits in the last 5 minutes, skipping workflow"
+                      echo "No commits in the last hour, skipping workflow"
                   fi
 
     set-build-type:
