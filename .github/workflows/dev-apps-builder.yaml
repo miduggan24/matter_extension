@@ -1,7 +1,8 @@
-name: Build Dev apps # Testing commit 
+name: Build Dev apps
+
 on:
     schedule:
-        - cron: '*/5 * * * *' # Every 5 minutes (for testing - change back to '0 22 * * *' for daily at 6 pm EST)
+        - cron: '0 23 * * *' # 6 pm EST daily, changed from 22 to 23 due to Daylight Saving
     pull_request:
         branches:
             - main
@@ -28,30 +29,29 @@ jobs:
             should-run: ${{ steps.check-changes.outputs.should-run }}
         steps:
             - name: Checkout repository
-              uses: actions/checkout@v4
+              uses: actions/checkout@v5
               with:
                   fetch-depth: 0
 
             - name: Check for changes since last run
               id: check-changes
               run: |
-                  # Always run for non-scheduled events (PR, workflow_dispatch)
+                  # Always run for non-schedule event
                   if [[ "${{ github.event_name }}" != "schedule" ]]; then
                       echo "should-run=true" >> $GITHUB_OUTPUT
                       echo "Non-scheduled event, running workflow"
                       exit 0
                   fi
                   
-                  # For scheduled runs, check if there are commits in the last 5 minutes (for testing - change back to '24 hours ago' for production)
-                  SINCE_TIME=$(date -u -d '5 minutes ago' '+%Y-%m-%dT%H:%M:%SZ')
+                  SINCE_TIME=$(date -u -d '24 hours ago' '+%Y-%m-%dT%H:%M:%SZ')
                   RECENT_COMMITS=$(git rev-list --count --since="$SINCE_TIME" HEAD)
                   
                   if [[ $RECENT_COMMITS -gt 0 ]]; then
                       echo "should-run=true" >> $GITHUB_OUTPUT
-                      echo "Found $RECENT_COMMITS commits in the last 5 minutes, running workflow"
+                      echo "Found $RECENT_COMMITS commits in the last 24 hours, running workflow"
                   else
                       echo "should-run=false" >> $GITHUB_OUTPUT
-                      echo "No commits in the last 5 minutes, skipping workflow"
+                      echo "No commits in the last 24 hours, skipping workflow"
                   fi
 
     set-build-type:
@@ -239,19 +239,3 @@ jobs:
         uses: ./.github/workflows/sqa-sanity-tests.yaml
         secrets:
             SILABSSW_MATTER_CI_BOT_APP_PRIVATE_KEY: ${{ secrets.SILABSSW_MATTER_CI_BOT_APP_PRIVATE_KEY }}
-
-    trigger-sqa-workflow:
-        name: Trigger SQA Workflow
-        needs: wait-for-test-results
-        runs-on: ubuntu-latest
-        if: ${{ startsWith(github.ref, 'refs/heads/release_') || github.ref == 'refs/heads/main' }}
-        steps:
-            - name: Trigger Workflow
-              run: |
-                  curl -X POST \
-                      -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
-                      -H "Accept: application/vnd.github.v3+json" \
-                      https://api.github.com/repos/${{ github.repository }}/actions/workflows/sqa-apps-builder.yaml/dispatches \
-                      -d '{
-                          "ref": "${{ github.ref }}"
-                      }'
