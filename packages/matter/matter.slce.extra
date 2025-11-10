@@ -1800,8 +1800,8 @@ extra_files:
   - third_party/matter_sdk/src/app/clusters/boolean-state-configuration-server/BooleanStateConfigurationTestEventTriggerHandler.h
   - third_party/matter_sdk/src/app/clusters/boolean-state-configuration-server/app_config_dependent_sources.cmake
   - third_party/matter_sdk/src/app/clusters/boolean-state-configuration-server/app_config_dependent_sources.gni
+  - third_party/matter_sdk/src/app/clusters/boolean-state-configuration-server/boolean-state-configuration-cluster.cpp
   - third_party/matter_sdk/src/app/clusters/boolean-state-configuration-server/boolean-state-configuration-delegate.h
-  - third_party/matter_sdk/src/app/clusters/boolean-state-configuration-server/boolean-state-configuration-server.cpp
   - third_party/matter_sdk/src/app/clusters/boolean-state-configuration-server/boolean-state-configuration-server.h
   - third_party/matter_sdk/src/app/clusters/boolean-state-server/BUILD.gn
   - third_party/matter_sdk/src/app/clusters/boolean-state-server/CodegenIntegration.cpp
@@ -1961,10 +1961,11 @@ extra_files:
   - third_party/matter_sdk/src/app/clusters/ecosystem-information-server/ecosystem-information-server.cpp
   - third_party/matter_sdk/src/app/clusters/ecosystem-information-server/ecosystem-information-server.h
   - third_party/matter_sdk/src/app/clusters/electrical-energy-measurement-server/BUILD.gn
+  - third_party/matter_sdk/src/app/clusters/electrical-energy-measurement-server/ElectricalEnergyMeasurementCluster.cpp
+  - third_party/matter_sdk/src/app/clusters/electrical-energy-measurement-server/ElectricalEnergyMeasurementCluster.h
   - third_party/matter_sdk/src/app/clusters/electrical-energy-measurement-server/EnergyReportingTestEventTriggerHandler.h
   - third_party/matter_sdk/src/app/clusters/electrical-energy-measurement-server/app_config_dependent_sources.cmake
   - third_party/matter_sdk/src/app/clusters/electrical-energy-measurement-server/app_config_dependent_sources.gni
-  - third_party/matter_sdk/src/app/clusters/electrical-energy-measurement-server/electrical-energy-measurement-server.cpp
   - third_party/matter_sdk/src/app/clusters/electrical-energy-measurement-server/electrical-energy-measurement-server.h
   - third_party/matter_sdk/src/app/clusters/electrical-grid-conditions-server/BUILD.gn
   - third_party/matter_sdk/src/app/clusters/electrical-grid-conditions-server/ElectricalGridConditionsTestEventTriggerHandler.h
@@ -2015,7 +2016,9 @@ extra_files:
   - third_party/matter_sdk/src/app/clusters/fixed-label-server/tests/BUILD.gn
   - third_party/matter_sdk/src/app/clusters/fixed-label-server/tests/TestFixedLabelCluster.cpp
   - third_party/matter_sdk/src/app/clusters/general-commissioning-server/BUILD.gn
+  - third_party/matter_sdk/src/app/clusters/general-commissioning-server/BreadCrumbTracker.h
   - third_party/matter_sdk/src/app/clusters/general-commissioning-server/CodegenIntegration.cpp
+  - third_party/matter_sdk/src/app/clusters/general-commissioning-server/CodegenIntegration.h
   - third_party/matter_sdk/src/app/clusters/general-commissioning-server/app_config_dependent_sources.cmake
   - third_party/matter_sdk/src/app/clusters/general-commissioning-server/app_config_dependent_sources.gni
   - third_party/matter_sdk/src/app/clusters/general-commissioning-server/general-commissioning-cluster.cpp
@@ -2377,6 +2380,7 @@ extra_files:
   - third_party/matter_sdk/src/app/clusters/testing/AttributeTesting.h
   - third_party/matter_sdk/src/app/clusters/testing/BUILD.gn
   - third_party/matter_sdk/src/app/clusters/testing/ClusterTester.h
+  - third_party/matter_sdk/src/app/clusters/testing/ValidateGlobalAttributes.h
   - third_party/matter_sdk/src/app/clusters/thermostat-server/BUILD.gn
   - third_party/matter_sdk/src/app/clusters/thermostat-server/PresetStructWithOwnedMembers.cpp
   - third_party/matter_sdk/src/app/clusters/thermostat-server/PresetStructWithOwnedMembers.h
@@ -2431,13 +2435,14 @@ extra_files:
   - third_party/matter_sdk/src/app/clusters/time-synchronization-server/TimeSyncDataProvider.h
   - third_party/matter_sdk/src/app/clusters/time-synchronization-server/app_config_dependent_sources.cmake
   - third_party/matter_sdk/src/app/clusters/time-synchronization-server/app_config_dependent_sources.gni
+  - third_party/matter_sdk/src/app/clusters/time-synchronization-server/time-synchronization-cluster.cpp
+  - third_party/matter_sdk/src/app/clusters/time-synchronization-server/time-synchronization-cluster.h
   - third_party/matter_sdk/src/app/clusters/time-synchronization-server/time-synchronization-delegate.h
-  - third_party/matter_sdk/src/app/clusters/time-synchronization-server/time-synchronization-server.cpp
-  - third_party/matter_sdk/src/app/clusters/time-synchronization-server/time-synchronization-server.h
   - third_party/matter_sdk/src/app/clusters/tls-certificate-management-server/BUILD.gn
   - third_party/matter_sdk/src/app/clusters/tls-certificate-management-server/CertificateTable.h
   - third_party/matter_sdk/src/app/clusters/tls-certificate-management-server/CertificateTableImpl.cpp
   - third_party/matter_sdk/src/app/clusters/tls-certificate-management-server/CertificateTableImpl.h
+  - third_party/matter_sdk/src/app/clusters/tls-certificate-management-server/IncrementingIdHelper.h
   - third_party/matter_sdk/src/app/clusters/tls-certificate-management-server/app_config_dependent_sources.cmake
   - third_party/matter_sdk/src/app/clusters/tls-certificate-management-server/app_config_dependent_sources.gni
   - third_party/matter_sdk/src/app/clusters/tls-certificate-management-server/tls-certificate-management-server.cpp
@@ -2499,8 +2504,6 @@ extra_files:
   - third_party/matter_sdk/src/app/clusters/wifi-network-diagnostics-server/tests/TestWiFiNetworkDiagnosticsCluster.cpp
   - third_party/matter_sdk/src/app/clusters/wifi-network-diagnostics-server/wifi-network-diagnostics-cluster.cpp
   - third_party/matter_sdk/src/app/clusters/wifi-network-diagnostics-server/wifi-network-diagnostics-cluster.h
-  - third_party/matter_sdk/src/app/clusters/wifi-network-diagnostics-server/wifi-network-diagnostics-logic.cpp
-  - third_party/matter_sdk/src/app/clusters/wifi-network-diagnostics-server/wifi-network-diagnostics-logic.h
   - third_party/matter_sdk/src/app/clusters/wifi-network-management-server/BUILD.gn
   - third_party/matter_sdk/src/app/clusters/wifi-network-management-server/app_config_dependent_sources.cmake
   - third_party/matter_sdk/src/app/clusters/wifi-network-management-server/app_config_dependent_sources.gni
@@ -2728,6 +2731,7 @@ extra_files:
   - third_party/matter_sdk/src/app/tests/TestBasicCommandPathRegistry.cpp
   - third_party/matter_sdk/src/app/tests/TestBufferedReadCallback.cpp
   - third_party/matter_sdk/src/app/tests/TestBuilderParser.cpp
+  - third_party/matter_sdk/src/app/tests/TestCertificateTableImpl.cpp
   - third_party/matter_sdk/src/app/tests/TestCheckInHandler.cpp
   - third_party/matter_sdk/src/app/tests/TestClosureControlClusterLogic.cpp
   - third_party/matter_sdk/src/app/tests/TestClosureControlClusterObjects.cpp
@@ -3336,6 +3340,7 @@ extra_files:
   - third_party/matter_sdk/src/app/util/mock/MockNodeConfig.cpp
   - third_party/matter_sdk/src/app/util/mock/MockNodeConfig.h
   - third_party/matter_sdk/src/app/util/mock/attribute-storage.cpp
+  - third_party/matter_sdk/src/app/util/mock/include/app/static-cluster-config/GeneralCommissioning.h
   - third_party/matter_sdk/src/app/util/mock/include/zap-generated/endpoint_config.h
   - third_party/matter_sdk/src/app/util/mock/include/zap-generated/gen_config.h
   - third_party/matter_sdk/src/app/util/mock/privilege-storage.cpp
@@ -3396,6 +3401,8 @@ extra_files:
   - third_party/matter_sdk/src/app/zap-templates/templates/app/clusters-shared-Structs.ipp.zapt
   - third_party/matter_sdk/src/app/zap-templates/templates/app/codedriven-callback.h.zapt
   - third_party/matter_sdk/src/app/zap-templates/templates/app/codedriven-init-shutdown.cpp.zapt
+  - third_party/matter_sdk/src/app/zap-templates/templates/app/devices-Ids.h.zapt
+  - third_party/matter_sdk/src/app/zap-templates/templates/app/devices-Types.h.zapt
   - third_party/matter_sdk/src/app/zap-templates/templates/app/endpoint_config.zapt
   - third_party/matter_sdk/src/app/zap-templates/templates/app/gen_config.zapt
   - third_party/matter_sdk/src/app/zap-templates/templates/app/ids/Attributes.h.zapt
