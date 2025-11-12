@@ -200,6 +200,17 @@ jobs:
                   name: "dev-artifacts-${{ needs.set-build-type.outputs.build-type }}"
                   delete-merged: true
                   pattern: "*-${{ needs.set-build-type.outputs.build-type }}"
+                  exclude-pattern: "*-${{ needs.set-build-type.outputs.build-type }}-map-files"
+
+    code-size-analysis:
+        name: Code Size Analysis
+        needs:
+            - set-build-type
+            - merge-apps
+        if: ${{ needs.set-build-type.outputs.build-type == 'full' && success() }}
+        uses: ./.github/workflows/code-size-analysis.yaml
+        with:
+            build-type: ${{ needs.set-build-type.outputs.build-type }}
 
     wait-for-test-results:
         name: Wait for Test Results
