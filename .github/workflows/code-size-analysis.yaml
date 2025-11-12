@@ -6,9 +6,6 @@ on:
             build-type:
                 required: true
                 type: string
-            artifact-name:
-                required: true
-                type: string
 
 jobs:
     code-size-analysis:
@@ -23,8 +20,9 @@ jobs:
             - name: Download map file artifacts
               uses: actions/download-artifact@v4
               with:
-                  name: ${{ inputs.artifact-name }}
+                  pattern: "*-${{ inputs.build-type }}-map-files"
                   path: ./map-files
+                  merge-multiple: false
 
             - name: Set up Python
               uses: actions/setup-python@v4
@@ -47,17 +45,30 @@ jobs:
                   # Extract app name from path
                   extract_app_from_path() {
                       local path=$1
-                      # Get the solution directory 
-                      local solution_dir=$(echo "$path" | cut -d'/' -f3)
-                      
                       local app_name
-                      if [[ "$solution_dir" == *"zigbee-matter-light"* ]]; then
+                      
+                      # Try to find the app directory by looking for known patterns in the path
+                      if [[ "$path" == *"/zigbee-matter-light/"* ]]; then
                           app_name="zigbee-matter-light"
-                      elif [[ "$solution_dir" == *"thermostat"* ]]; then
+                      elif [[ "$path" == *"/thermostat/"* ]]; then
                           app_name="thermostat-app"
                       else
-                          # Extract everything up to and including -app
-                          app_name=$(echo "$solution_dir" | sed -E 's/^([^-]+-app).*$/\1/')
+                          # Extract app name from path - look for pattern like "lighting-app/thread" or "lighting-app/wifi"
+                          # The app name is typically before "/thread/" or "/wifi/"
+                          local solution_dir=$(echo "$path" | grep -oE "[^/]+/(thread|wifi)/" | cut -d'/' -f1)
+                          if [ -z "$solution_dir" ]; then
+                              # Fallback: try to extract from artifact name or path structure
+                              solution_dir=$(echo "$path" | cut -d'/' -f2 | sed -E 's/-[^-]+-[^-]+-map-files$//')
+                          fi
+                          
+                          if [[ "$solution_dir" == *"zigbee-matter-light"* ]]; then
+                              app_name="zigbee-matter-light"
+                          elif [[ "$solution_dir" == *"thermostat"* ]]; then
+                              app_name="thermostat-app"
+                          else
+                              # Extract everything up to and including -app
+                              app_name=$(echo "$solution_dir" | sed -E 's/^([^-]+-app).*$/\1/')
+                          fi
                       fi
                       
                       echo "$app_name"
@@ -93,8 +104,22 @@ jobs:
                   perform_code_analysis() {
                       local map_file_path=$1
                       
-                      # Extract board from path
-                      local brd=$(echo "$map_file_path" | cut -d'/' -f2)
+                      # Extract board from path (board directories: brd4187c, brd4407a, brd4338a)
+                      local brd
+                      if [[ "$map_file_path" == *"/brd4187c/"* ]]; then
+                          brd="brd4187c"
+                      elif [[ "$map_file_path" == *"/brd4407a/"* ]]; then
+                          brd="brd4407a"
+                      elif [[ "$map_file_path" == *"/brd4338a/"* ]]; then
+                          brd="brd4338a"
+                      else
+                          # Fallback: try to extract from path structure
+                          brd=$(echo "$map_file_path" | grep -oE "(brd4187c|brd4407a|brd4338a)" | head -1)
+                          if [ -z "$brd" ]; then
+                              echo "Warning: Could not determine board from path: $map_file_path"
+                              return
+                          fi
+                      fi
                       
                       # Extract app, protocol, and options from path
                       local app=$(extract_app_from_path "$map_file_path")
