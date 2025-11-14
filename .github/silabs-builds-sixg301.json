@@ -8,6 +8,10 @@
             {
                 "boards": ["brd4407a"],
                 "arguments": ["--output_suffix copy-sources", "--copy-sources"]
+            },
+            {
+                "boards": ["brd4407a"],
+                "arguments": ["--output_suffix lto", "'--with matter_no_debug,toolchain_gcc_lto'", "'--without matter_shell,matter_qr_code,matter_lcd'", "-pids application"]
             }
         ],
         "zigbee-matter-light": [
@@ -18,6 +22,10 @@
             {
                 "boards": ["brd4407a"],
                 "arguments": ["--output_suffix sequential-copy-sources","--with matter_zigbee_sequential", "--copy-sources"] 
+            },
+            {
+                "boards": ["brd4407a"],
+                "arguments": ["--output_suffix sequential-lto", "'--with matter_zigbee_sequential,matter_no_debug,toolchain_gcc_lto'", "'--without matter_shell,matter_qr_code,matter_lcd'", "-pids application"]
             }
         ],
         "thermostat": [
@@ -36,10 +44,6 @@
             {
                 "boards": ["brd1019a", "brd2719a", "brd4407a", "brd4408a"],
                 "arguments": ["--output_suffix copy-sources", "--copy-sources"] 
-            },
-            {
-                "boards": ["brd4407a"],
-                "arguments": ["--output_suffix lto", "'--with matter_no_debug;matter,toolchain_gcc_lto'", "'--without matter_shell;matter,matter_qr_code;matter,matter_lcd;matter'", "-pids application"]
             }
         ],
         "zigbee-matter-light":  [
@@ -50,10 +54,6 @@
             {
                 "boards": ["brd1019a", "brd2719a","brd4407a", "brd4408a"],
                 "arguments": ["--output_suffix sequential-copy-sources","'--with matter_zigbee_sequential;matter'", "--copy-sources"] 
-            },
-            {
-                "boards": ["brd4407a"],
-                "arguments": ["--output_suffix sequential-lto", "'--with matter_zigbee_sequential;matter,matter_no_debug;matter,toolchain_gcc_lto'", "'--without matter_shell;matter,matter_qr_code;matter,matter_lcd;matter'", "-pids application"]
             }
         ],
         "thermostat": [

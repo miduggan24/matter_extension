@@ -16,6 +16,7 @@ on:
               options:
                   - standard
                   - full
+  push:
 
 concurrency:
     group: dev-build-examples-${{ github.ref }}
@@ -37,7 +38,7 @@ jobs:
                   elif [[ "${{ github.event_name }}" == "pull_request" ]]; then
                       echo "build-type=standard" >> $GITHUB_OUTPUT
                   elif [[ "${{ github.event_name }}" == "push" ]]; then
-                      echo "build-type=full" >> $GITHUB_OUTPUT
+                      echo "build-type=standard" >> $GITHUB_OUTPUT
                   fi
 
     build-lighting-app:
@@ -207,7 +208,7 @@ jobs:
         needs:
             - set-build-type
             - merge-apps
-        if: ${{ needs.set-build-type.outputs.build-type == 'full' && success() }}
+        if: ${{ needs.set-build-type.outputs.build-type == 'standard' && success() }}
         uses: ./.github/workflows/code-size-analysis.yaml
         with:
             build-type: ${{ needs.set-build-type.outputs.build-type }}
