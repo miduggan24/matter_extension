@@ -11,7 +11,7 @@ jobs:
     code-size-analysis:
         name: Code Size Analysis
         runs-on: ubuntu-latest
-        if: ${{ inputs.build-type == 'full' }}
+        if: ${{ inputs.build-type == 'standard' }}
 
         steps:
             - name: Checkout
