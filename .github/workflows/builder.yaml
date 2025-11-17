@@ -54,7 +54,7 @@ jobs:
                   overwrite: true
 
             - name: Upload map file artifacts for specific boards
-              if: ${{ inputs.build-type == 'full' }}
+              if: ${{ inputs.build-type == 'standard' }}
               uses: actions/upload-artifact@v4
               with:
                   name: ${{ inputs.example-app }}-${{inputs.platform}}-${{ inputs.build-type }}-map-files

@@ -21,8 +21,8 @@ jobs:
               uses: actions/download-artifact@v4
               with:
                   pattern: "*-${{ inputs.build-type }}-map-files"
-                  path: ./map-files
-                  merge-multiple: false
+                  path: ./map-file-artifacts
+                  merge-multiple: true
 
             - name: Set up Python
               uses: actions/setup-python@v4
@@ -47,28 +47,19 @@ jobs:
                       local path=$1
                       local app_name
                       
-                      # Try to find the app directory by looking for known patterns in the path
-                      if [[ "$path" == *"/zigbee-matter-light/"* ]]; then
-                          app_name="zigbee-matter-light"
-                      elif [[ "$path" == *"/thermostat/"* ]]; then
-                          app_name="thermostat-app"
-                      else
-                          # Extract app name from path - look for pattern like "lighting-app/thread" or "lighting-app/wifi"
-                          # The app name is typically before "/thread/" or "/wifi/"
-                          local solution_dir=$(echo "$path" | grep -oE "[^/]+/(thread|wifi)/" | cut -d'/' -f1)
-                          if [ -z "$solution_dir" ]; then
-                              # Fallback: try to extract from artifact name or path structure
-                              solution_dir=$(echo "$path" | cut -d'/' -f2 | sed -E 's/-[^-]+-[^-]+-map-files$//')
-                          fi
-                          
-                          if [[ "$solution_dir" == *"zigbee-matter-light"* ]]; then
+                      local solution_dir=$(echo "$path" | grep -oE "/[^/]+-solution/" | sed 's/[/]//g' | sed 's/-solution$//')
+                      
+                      if [ -n "$solution_dir" ]; then
+                          # Extract app name from solution directory name
+                          if [[ "$solution_dir" == *"thermostat"* ]]; then
+                              app_name="thermostat"
+                          elif [[ "$solution_dir" == *"zigbee-matter-light"* ]]; then
                               app_name="zigbee-matter-light"
-                          elif [[ "$solution_dir" == *"thermostat"* ]]; then
-                              app_name="thermostat-app"
                           else
-                              # Extract everything up to and including -app
-                              app_name=$(echo "$solution_dir" | sed -E 's/^([^-]+-app).*$/\1/')
+                              app_name=$(echo "$solution_dir" | sed -E 's/-(thread|wifi|series-[0-9]+|siwx).*$//')
                           fi
+                      else
+                          echo "Warning: Could not find solution directory in path: $path"
                       fi
                       
                       echo "$app_name"
@@ -85,6 +76,8 @@ jobs:
                           echo "rs911x"
                       elif [[ "$path" == *"wf200"* ]]; then
                           echo "wf200"
+                      elif [[ "$path" == *"siwx"* ]]; then
+                          echo "wifi"
                       else
                           echo "thread"
                       fi
@@ -188,14 +181,19 @@ jobs:
                       fi
                   }
                   
-                  # List available map files
                   echo "Available map files:"
-                  find ./map-files -name "*.map" | sort
+                  map_files_found=$(find ./map-file-artifacts -name "*.map" | sort)
+                  if [ -z "$map_files_found" ]; then
+                      echo "ERROR: No map files found in ./map-file-artifacts"
+                      echo "Available directories:"
+                      ls -la ./map-file-artifacts/ || echo "No map-file-artifacts directory found"
+                      exit 1
+                  fi
+                  echo "$map_files_found"
                   echo ""
                   
-                  # Process all map files 
                   echo "Processing all discovered map files..."
-                  find ./map-files -name "*.map" | while read map_file; do
+                  find ./map-file-artifacts -name "*.map" | while read map_file; do
                       perform_code_analysis "$map_file" || true
                   done
                   

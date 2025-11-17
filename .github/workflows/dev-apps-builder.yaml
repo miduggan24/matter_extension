@@ -201,7 +201,6 @@ jobs:
                   name: "dev-artifacts-${{ needs.set-build-type.outputs.build-type }}"
                   delete-merged: true
                   pattern: "*-${{ needs.set-build-type.outputs.build-type }}"
-                  exclude-pattern: "*-${{ needs.set-build-type.outputs.build-type }}-map-files"
 
     code-size-analysis:
         name: Code Size Analysis
