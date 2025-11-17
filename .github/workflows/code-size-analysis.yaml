@@ -52,9 +52,7 @@ jobs:
                       if [ -n "$solution_dir" ]; then
                           local base_name=$(echo "$solution_dir" | sed -E 's/-solution(-lto)?$//')
                           
-                          if [[ "$base_name" == *"thermostat"* ]]; then
-                              app_name="thermostat"
-                          elif [[ "$base_name" == *"zigbee-matter-light"* ]]; then
+                          if [[ "$base_name" == *"zigbee-matter-light"* ]]; then
                               app_name="zigbee-matter-light"
                           else
                               app_name=$(echo "$base_name" | sed -E 's/-(thread|wifi|series-[0-9]+|siwx|mg24|sixg301|917-soc|917-ncp|series-2-internal|internal).*$//')
@@ -192,14 +190,14 @@ jobs:
                   map_files_found=$(find ./map-file-artifacts -name "*.map" | grep -E "(brd4187c|brd4407a|brd4338a).*/[^/]*-solution(-lto)?/" | sort)
                   if [ -z "$map_files_found" ]; then
                       echo "ERROR: No map files found in ./map-file-artifacts"
-                      echo "Available directories:"
-                      ls -la ./map-file-artifacts/ || echo "No map-file-artifacts directory found"
+                      echo "All available map files:"
+                      find ./map-file-artifacts -name "*.map" | sort || echo "No map files found"
                       exit 1
                   fi
                   echo "$map_files_found"
                   echo ""
                   
-                  echo "Processing all discovered map files..."
+                  echo "Processing map files..."
                   find ./map-file-artifacts -name "*.map" | grep -E "(brd4187c|brd4407a|brd4338a).*/[^/]*-solution(-lto)?/" | while read map_file; do
                       perform_code_analysis "$map_file" || true
                   done
