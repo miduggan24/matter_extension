@@ -44,16 +44,3 @@ jobs:
             echo "Response: $response_body"
             exit 1
           fi
-
-      - name: Log trigger details
-        env:
-          BRANCH: ${{ matrix.branch }}
-          BUILD_TYPE: 'full'
-        run: |
-          echo "Trigger Summary:"
-          echo "- Repository: ${{ github.repository }}"
-          echo "- Target Branch: $BRANCH" 
-          echo "- Build Type: $BUILD_TYPE"
-          echo "- Triggered By: ${{ github.actor }}"
-          echo "- Event: ${{ github.event_name }}"
-          echo "- Time: $(date -u)"
