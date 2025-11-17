@@ -47,19 +47,21 @@ jobs:
                       local path=$1
                       local app_name
                       
-                      local solution_dir=$(echo "$path" | grep -oE "/[^/]+-solution/" | sed 's/[/]//g' | sed 's/-solution$//')
+                      local solution_dir=$(echo "$path" | grep -oE "[^/]*-solution(-lto)?" | head -1)
                       
                       if [ -n "$solution_dir" ]; then
-                          # Extract app name from solution directory name
-                          if [[ "$solution_dir" == *"thermostat"* ]]; then
+                          local base_name=$(echo "$solution_dir" | sed -E 's/-solution(-lto)?$//')
+                          
+                          if [[ "$base_name" == *"thermostat"* ]]; then
                               app_name="thermostat"
-                          elif [[ "$solution_dir" == *"zigbee-matter-light"* ]]; then
+                          elif [[ "$base_name" == *"zigbee-matter-light"* ]]; then
                               app_name="zigbee-matter-light"
                           else
-                              app_name=$(echo "$solution_dir" | sed -E 's/-(thread|wifi|series-[0-9]+|siwx).*$//')
+                              app_name=$(echo "$base_name" | sed -E 's/-(thread|wifi|series-[0-9]+|siwx|mg24|sixg301|917-soc|917-ncp|series-2-internal|internal).*$//')
                           fi
                       else
-                          echo "Warning: Could not find solution directory in path: $path"
+                          echo "ERROR: Could not find solution directory in path: $path" >&2
+                          return 1
                       fi
                       
                       echo "$app_name"
@@ -116,6 +118,11 @@ jobs:
                       
                       # Extract app, protocol, and options from path
                       local app=$(extract_app_from_path "$map_file_path")
+                      if [ $? -ne 0 ] || [ -z "$app" ]; then
+                          echo "ERROR: Failed to extract app name from $map_file_path"
+                          return 1
+                      fi
+                      
                       local protocol=$(determine_protocol "$map_file_path")
                       local options=$(determine_build_options "$map_file_path")
                       
@@ -182,7 +189,7 @@ jobs:
                   }
                   
                   echo "Available map files:"
-                  map_files_found=$(find ./map-file-artifacts -name "*.map" | sort)
+                  map_files_found=$(find ./map-file-artifacts -name "*.map" | grep -E "(brd4187c|brd4407a|brd4338a).*/[^/]*-solution(-lto)?/" | sort)
                   if [ -z "$map_files_found" ]; then
                       echo "ERROR: No map files found in ./map-file-artifacts"
                       echo "Available directories:"
@@ -193,7 +200,7 @@ jobs:
                   echo ""
                   
                   echo "Processing all discovered map files..."
-                  find ./map-file-artifacts -name "*.map" | while read map_file; do
+                  find ./map-file-artifacts -name "*.map" | grep -E "(brd4187c|brd4407a|brd4338a).*/[^/]*-solution(-lto)?/" | while read map_file; do
                       perform_code_analysis "$map_file" || true
                   done
                   
