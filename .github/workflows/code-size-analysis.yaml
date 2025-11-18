@@ -166,7 +166,7 @@ jobs:
                       
                       # Run code size analysis
                       unset OTEL_EXPORTER_OTLP_ENDPOINT || true
-                      if code_size_analyzer_cli \
+                      if timeout 300 code_size_analyzer_cli \
                           --map_file "$map_file_path" \
                           --stack_name matter \
                           --target_part "$target_part" \
