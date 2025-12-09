@@ -1,0 +1,10 @@
+name: Update matter_sdk submodule
+
+on:
+  schedule:
+    - cron: '*/5 * * * *'
+  workflow_dispatch:
+
+jobs:
+  update-sdk:
+    uses: SiliconLabsSoftware/matter_build_action/.github/workflows/matter-sdk-update.yml@main
