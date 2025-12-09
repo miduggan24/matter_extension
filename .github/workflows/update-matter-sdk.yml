@@ -7,4 +7,4 @@ on:
 
 jobs:
   update-sdk:
-    uses: SiliconLabsSoftware/matter_build_action/.github/workflows/matter-sdk-update.yml@main
+    uses: SiliconLabsSoftware/matter_build_action/.github/workflows/matter-sdk-update.yml@feature/MATTER-5624
