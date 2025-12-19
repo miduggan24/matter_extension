@@ -1,0 +1,63 @@
+name: Update matter_sdk Submodule (Local)
+
+on:
+  workflow_call:
+    inputs:
+      target_branch:
+        description: 'Target branch to update'
+        required: true
+        type: string
+  workflow_dispatch:
+    inputs:
+      target_branch:
+        description: 'Target branch to update'
+        required: false
+        default: 'main'
+
+jobs:
+  update-matter_sdk:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+        with:
+          ref: ${{ inputs.target_branch }}
+          token: ${{ secrets.GITHUB_TOKEN }}
+          submodules: false
+
+      - name: Update submodule
+        id: update_submodule
+        shell: bash
+        run: |
+          git submodule update --init third_party/matter_sdk
+          short_hash_before=$(cd third_party/matter_sdk && git rev-parse --short HEAD)
+          echo "short_hash_before=${short_hash_before}" >> $GITHUB_OUTPUT
+          cd third_party/matter_sdk
+          git fetch origin ${{ inputs.target_branch }}
+          git checkout origin/${{ inputs.target_branch }}
+          cd ../..
+          git add third_party/matter_sdk
+          if git diff-index --quiet HEAD; then
+            echo "empty=true" >> $GITHUB_OUTPUT
+            echo "No changes to matter_sdk submodule"
+            exit 0
+          fi
+          short_hash=$(cd third_party/matter_sdk && git rev-parse --short HEAD)
+          echo "short_hash=${short_hash}" >> $GITHUB_OUTPUT
+          echo "pr_branch=update-matter-sdk-${{ inputs.target_branch }}-${short_hash}" >> $GITHUB_OUTPUT
+          echo "Submodule updated from ${short_hash_before} to ${short_hash}"
+
+      - name: Create PR
+        if: steps.update_submodule.outputs.empty != 'true'
+        uses: peter-evans/create-pull-request@v7
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          base: ${{ inputs.target_branch }}
+          commit-message: "Update matter_sdk submodule to ${{ steps.update_submodule.outputs.short_hash }}"
+          title: "[${{ inputs.target_branch }}] Update matter_sdk submodule to ${{ steps.update_submodule.outputs.short_hash }}"
+          body: |
+            Bumps matter_sdk submodule from `${{ steps.update_submodule.outputs.short_hash_before }}` to `${{ steps.update_submodule.outputs.short_hash }}`.
+
+            See diff at https://github.com/SiliconLabsSoftware/matter_sdk/compare/${{ steps.update_submodule.outputs.short_hash_before }}...${{ steps.update_submodule.outputs.short_hash }}
+          branch: ${{ steps.update_submodule.outputs.pr_branch }}
+

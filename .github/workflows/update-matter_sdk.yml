@@ -1,0 +1,30 @@
+name: Update matter_sdk Submodule
+
+permissions:
+  contents: write
+  pull-requests: write
+
+on:
+  schedule:
+    - cron: '0 5 * * *' # Daily at midnight
+  workflow_dispatch:
+    inputs:
+      target_branch:
+        description: 'Target branch to update'
+        required: false
+        default: 'main'
+
+jobs:
+  update-matter_sdk:
+    strategy:
+      matrix: 
+        target_branch: >-
+          ${{
+            github.event_name == 'schedule'
+              && fromJson('["main","release_2.8-1.5"]')
+              || fromJson(format('["{0}"]', inputs.target_branch))
+          }}
+    uses: ./.github/workflows/update-matter_sdk-local.yml
+    with:
+      target_branch: ${{ matrix.target_branch }}
+    secrets: inherit
