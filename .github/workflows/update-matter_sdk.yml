@@ -1,7 +1,8 @@
 name: Update matter_sdk Submodule
 
 permissions:
-  contents: read
+  contents: write
+  pull-requests: write
 
 on:
   schedule:
@@ -32,8 +33,6 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Update matter_sdk submodule
-        uses: SiliconLabsSoftware/matter_update_submodules@main
+        uses: SiliconLabsSoftware/matter_update_submodules@testing/no-app-auth
         with:
           target_branch: ${{ matrix.target_branch }}
-          app-id: ${{ vars.SILABSSW_MATTER_CI_BOT_APP_ID }}
-          private-key: ${{ secrets.SILABSSW_MATTER_CI_BOT_APP_PRIVATE_KEY }}
