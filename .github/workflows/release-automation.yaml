@@ -1,0 +1,256 @@
+name: Matter Extension Release Automation
+
+on:
+  workflow_dispatch:
+    inputs:
+      release_type:
+        description: 'Release type'
+        required: true
+        type: choice
+        options:
+          - rc
+          - release
+      rc_number:
+        description: 'RC number (required for RC releases)'
+        required: false
+        type: string
+      build_number:
+        description: 'Matter build number'
+        required: true
+        type: string
+
+env:
+  STAGING_DIR: staging_repo
+  STAGING_REPO_URL: https://github.com/miduggan24/matter_extension_staging.git
+  ARTIFACTORY_BASE_URL: https://artifactory.silabs.net/artifactory/gsdk-generic-staging/matter_extension_github
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    env:
+      STAGING_BRANCH: ${{ inputs.release_type == 'rc' && 'staging' || 'main' }}
+    
+    steps:
+      - name: Checkout development repository
+        uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+      
+      - name: Clean development repository
+        run: git clean -dxff
+      
+      - name: Update submodules
+        run: git submodule update --init
+      
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+      
+      - name: Install Python dependencies
+        run: |
+          pip install -r requirements.txt
+
+      - name: Read versions
+        id: read_version
+        run: |
+          set -e
+          echo "Reading Matter version from matter.slce..."
+          MATTER_VERSION=$(grep '^version:' matter.slce | awk '{print $2}')
+          if [ -z "$MATTER_VERSION" ]; then
+            echo "::error::Could not read version from matter.slce"
+            exit 1
+          fi
+          echo "Matter version: ${MATTER_VERSION}"
+          echo "Getting branch name for Artifactory path..."
+          BRANCH_NAME=$(git rev-parse --abbrev-ref HEAD)
+          echo "Branch name: ${BRANCH_NAME}"
+          echo "matter_version=${MATTER_VERSION}" >> $GITHUB_OUTPUT
+          echo "branch_name=${BRANCH_NAME}" >> $GITHUB_OUTPUT
+      
+      - name: Compute version metadata
+        id: version
+        run: |
+          RELEASE_TYPE="${{ inputs.release_type }}"
+          MATTER_VERSION="${{ steps.read_version.outputs.matter_version }}"
+          BRANCH_NAME="${{ steps.read_version.outputs.branch_name }}"
+          RC_NUMBER="${{ inputs.rc_number }}"
+          BUILD_NUMBER="${{ inputs.build_number }}"
+          if [ "$RELEASE_TYPE" = "rc" ] && [ -z "$RC_NUMBER" ]; then
+            echo "Error: RC number is required for RC releases"
+            exit 1
+          fi
+          VERSION_SUFFIX=$(echo "$BRANCH_NAME" | sed 's/release_[0-9]*\.[0-9]*//')
+          FULL_MATTER_VERSION="${MATTER_VERSION}${VERSION_SUFFIX}"
+          if [ "$RELEASE_TYPE" = "rc" ]; then
+            EXTENSION_TAG="v${MATTER_VERSION}-rc${RC_NUMBER}"
+            SUBLABEL="Silicon\\\\ Labs\\\\ Matter\\\\ ${FULL_MATTER_VERSION}\\\\ RC${RC_NUMBER}"
+          else
+            EXTENSION_TAG="v${MATTER_VERSION}"
+            SUBLABEL="Silicon\\\\ Labs\\\\ Matter\\\\ ${FULL_MATTER_VERSION}"
+          fi
+          echo "extension_tag=${EXTENSION_TAG}" >> $GITHUB_OUTPUT
+          echo "sublabel=${SUBLABEL}" >> $GITHUB_OUTPUT
+          echo "matter_version=${MATTER_VERSION}" >> $GITHUB_OUTPUT
+          echo "branch_name=${BRANCH_NAME}" >> $GITHUB_OUTPUT
+          echo "### Version Metadata" >> $GITHUB_STEP_SUMMARY
+          echo "- **Release Type:** ${RELEASE_TYPE}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Tag:** ${EXTENSION_TAG}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Branch:** ${BRANCH_NAME}" >> $GITHUB_STEP_SUMMARY
+          echo "- **SubLabel:** ${SUBLABEL}" >> $GITHUB_STEP_SUMMARY
+          echo "::notice::Extension Tag: ${EXTENSION_TAG}"
+      
+      - name: Download build binaries from Artifactory
+        id: download_artifacts
+        run: |
+          set -e
+          BUILD_NUMBER="${{ inputs.build_number }}"
+          BRANCH_NAME="${{ steps.version.outputs.branch_name }}"
+          mkdir -p artifacts
+          ARTIFACT_URL="${{ env.ARTIFACTORY_BASE_URL }}/${BRANCH_NAME}/${BUILD_NUMBER}/build-binaries.zip"
+          echo "Downloading build binaries from: ${ARTIFACT_URL}"
+          MAX_RETRIES=3
+          RETRY_COUNT=0
+          ARTIFACT_FILE="build-binaries.zip"
+          while [ $RETRY_COUNT -lt $MAX_RETRIES ]; do
+            if curl -f -L -o "artifacts/${ARTIFACT_FILE}" "${ARTIFACT_URL}"; then
+              echo "Successfully downloaded build binaries"
+              break
+            else
+              RETRY_COUNT=$((RETRY_COUNT + 1))
+              if [ $RETRY_COUNT -lt $MAX_RETRIES ]; then
+                echo "Download failed, retrying ($RETRY_COUNT/$MAX_RETRIES)..."
+                sleep 5
+              else
+                echo "::error::Failed to download build binaries after $MAX_RETRIES attempts"
+                exit 1
+              fi
+            fi
+          done
+          echo "Validating ZIP integrity..."
+          if ! unzip -t "artifacts/${ARTIFACT_FILE}" > /dev/null; then
+            echo "::error::Downloaded ZIP file is corrupted"
+            exit 1
+          fi
+          echo "Artifact validation passed"
+          ls -lh artifacts/
+          echo "Preview of build-binaries.zip contents:"
+          unzip -l "artifacts/${ARTIFACT_FILE}" | head -30
+          echo "artifact_path=artifacts/${ARTIFACT_FILE}" >> $GITHUB_OUTPUT
+          
+      - name: Extract and generate metadata
+        run: |
+          set -e
+          ARTIFACT_FILE="build-binaries.zip"
+          echo "Extracting build binaries..."
+          unzip -q "artifacts/${ARTIFACT_FILE}" -d demos
+          echo "Generating matter_demos.xml metadata..."
+          python3 slc/script/generate_metadata.py demos/
+          if [ ! -f "matter_demos.xml" ]; then
+            echo "::error::matter_demos.xml was not generated"
+            exit 1
+          fi
+          echo "Metadata generated successfully"
+
+      - name: Clone staging repository
+        run: |
+          set -e
+          echo "Cloning staging repository from: ${{ env.STAGING_REPO_URL }}"
+          echo "Target branch: ${{ env.STAGING_BRANCH }}"
+          git config --global user.name "GitHub Actions"
+          git config --global user.email "actions@github.com"
+          git clone --depth 1 --branch "${{ env.STAGING_BRANCH }}" "${{ env.STAGING_REPO_URL }}" "${{ env.STAGING_DIR }}"
+          cd "${{ env.STAGING_DIR }}"
+          echo "Staging repository cloned"
+          echo "Current branch: $(git branch --show-current)"
+      
+      - name: Clean staging repository
+        run: |
+          set -e
+          cd "${{ env.STAGING_DIR }}"
+          echo "Cleaning staging repository..."
+          find . -mindepth 1 -maxdepth 1 -not -name '.git' -exec rm -rf {} +
+          echo "Staging repository cleaned"
+      
+      - name: Run stage_extension.py
+        run: |
+          set -e
+          echo "Running stage_extension.py..."
+          STAGING_PARENT=$(dirname "$(pwd)/${{ env.STAGING_DIR }}")
+          python3 slc/stage_extension.py "${STAGING_PARENT}"
+          if [ -d "${STAGING_PARENT}/matter_extension" ]; then
+            echo "Moving staged content to staging repository root..."
+            cp -r "${STAGING_PARENT}/matter_extension/"* "${{ env.STAGING_DIR }}/"
+            cp -r "${STAGING_PARENT}/matter_extension/".??* "${{ env.STAGING_DIR }}/" 2>/dev/null || true
+            rm -rf "${STAGING_PARENT}/matter_extension"
+            echo "Content staged successfully"
+          else
+            echo "::error::stage_extension.py did not create matter_extension directory"
+            exit 1
+          fi
+      
+      - name: Update prop.subLabel in staging
+        run: |
+          set -e
+          cd "${{ env.STAGING_DIR }}"
+          SUBLABEL="${{ steps.version.outputs.sublabel }}"
+          echo "Updating prop.subLabel to: ${SUBLABEL}"
+          if [ -f "matter.slsdk" ]; then
+            sed -i.bak "s/^prop.subLabel=.*/prop.subLabel=${SUBLABEL}/" matter.slsdk
+            rm -f matter.slsdk.bak
+            echo "Updated matter.slsdk"
+          else
+            echo "::warning::matter.slsdk not found in staging"
+          fi
+      
+      - name: Normalize README.md in staging
+        run: |
+          set -e
+          cd "${{ env.STAGING_DIR }}"
+          echo "Normalizing README.md..."
+          {
+            echo "# Silicon Labs Simplicity Studio Extension for Matter"
+            echo ""
+            echo "This repository contains the code for the Simplicity Studio extension for Matter. The content of the repository is meant to be accessed through Silicon Labs Simplicity Studio and should not be used directly."
+          } > README.md
+          echo "README.md normalized"
+      
+      - name: Commit staged content
+        run: |
+          set -e
+          cd "${{ env.STAGING_DIR }}"
+          EXTENSION_TAG="${{ steps.version.outputs.extension_tag }}"
+          echo "Creating commit..."
+          git add -A
+          if git diff --cached --quiet; then
+            echo "::warning::No changes to commit"
+            echo "has_changes=false" >> $GITHUB_ENV
+          else
+            git commit -m "Silicon Labs Matter Extension ${EXTENSION_TAG}"
+            echo "Commit created"
+            echo "has_changes=true" >> $GITHUB_ENV
+          fi
+      
+      - name: Create tags
+        if: env.has_changes == 'true'
+        run: |
+          set -e
+          cd "${{ env.STAGING_DIR }}"
+          EXTENSION_TAG="${{ steps.version.outputs.extension_tag }}"
+          echo "Creating tag: ${EXTENSION_TAG}"
+          git tag -a "${EXTENSION_TAG}" -m "Matter Extension ${EXTENSION_TAG}"
+          echo "Created tag: ${EXTENSION_TAG}"
+          echo "### Tag Created" >> $GITHUB_STEP_SUMMARY
+          echo "- ${EXTENSION_TAG}" >> $GITHUB_STEP_SUMMARY
+      
+      - name: Push commits and tags
+        if: env.has_changes == 'true'
+        run: |
+          set -e
+          cd "${{ env.STAGING_DIR }}"
+          echo "Pushing to staging repository branch: ${{ env.STAGING_BRANCH }}..."
+          git push origin "${{ env.STAGING_BRANCH }}"
+          echo "Pushed commits"
+          git push origin --tags
+          echo "Pushed tags"
+          echo "::notice::Successfully pushed to staging repository"
