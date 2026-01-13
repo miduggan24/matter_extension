@@ -1,0 +1,269 @@
+name: Matter Extension Release Automation
+
+on:
+  workflow_dispatch:
+    inputs:
+      release_type:
+        description: 'Release type'
+        required: true
+        type: choice
+        options:
+          - rc
+          - release
+      rc_number:
+        description: 'RC number (required for RC releases)'
+        required: false
+        type: string
+
+env:
+  STAGING_REPO_URL: https://github.com/miduggan24/matter_extension_staging.git
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    env:
+      STAGING_BRANCH: ${{ inputs.release_type == 'rc' && 'staging' || 'main' }}
+    
+    steps:
+      # TODO: after testing, use GitHub App authentication below:
+      # - name: Generate GitHub App Token
+      #   id: generate_app_token
+      #   uses: actions/create-github-app-token@v2
+      #   with:
+      #     app-id: ${{ vars.SILABSSW_MATTER_CI_BOT_APP_ID }}
+      #     private-key: ${{ secrets.SILABSSW_MATTER_CI_BOT_APP_PRIVATE_KEY }}
+      # 
+      # - name: Mask the generated token
+      #   run: echo "::add-mask::${{ steps.generate_app_token.outputs.token }}"
+      
+      - name: Checkout development repository
+        uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+      
+      - name: Clean development repository
+        run: git clean -dxff
+      
+      - name: Update submodules
+        run: git submodule update --init
+      
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+      
+      - name: Install Python dependencies
+        run: |
+          pip install -r requirements.txt
+
+      - name: Read versions
+        id: read_version
+        run: |
+          set -e
+          echo "Reading Matter version from matter.slce..."
+          MATTER_VERSION=$(grep '^version:' matter.slce | awk '{print $2}')
+          if [ -z "$MATTER_VERSION" ]; then
+            echo "::error::Could not read Matter version from matter.slce"
+            exit 1
+          fi
+          echo "Matter version: ${MATTER_VERSION}"
+          
+          echo "Reading SDK version from matter.slce..."
+          SDK_VERSION=$(grep '^  version:' matter.slce | awk '{print $2}')
+          if [ -z "$SDK_VERSION" ]; then
+            echo "::warning::Could not read SDK version from matter.slce, using default"
+            SDK_VERSION="latest"
+          fi
+          echo "SDK version: ${SDK_VERSION}"
+          
+          echo "Getting branch name for Artifactory path..."
+          BRANCH_NAME=$(git rev-parse --abbrev-ref HEAD)
+          echo "Branch name: ${BRANCH_NAME}"
+          
+          echo "matter_version=${MATTER_VERSION}" >> $GITHUB_OUTPUT
+          echo "sdk_version=${SDK_VERSION}" >> $GITHUB_OUTPUT
+          echo "branch_name=${BRANCH_NAME}" >> $GITHUB_OUTPUT
+      
+      - name: Compute version metadata
+        id: version
+        run: |
+          RELEASE_TYPE="${{ inputs.release_type }}"
+          MATTER_VERSION="${{ steps.read_version.outputs.matter_version }}"
+          BRANCH_NAME="${{ steps.read_version.outputs.branch_name }}"
+          RC_NUMBER="${{ inputs.rc_number }}"
+          if [ "$RELEASE_TYPE" = "rc" ] && [ -z "$RC_NUMBER" ]; then
+            echo "Error: RC number is required for RC releases"
+            exit 1
+          fi
+          VERSION_SUFFIX=$(echo "$BRANCH_NAME" | sed 's/release_[0-9]*\.[0-9]*//')
+          FULL_MATTER_VERSION="${MATTER_VERSION}${VERSION_SUFFIX}"
+          if [ "$RELEASE_TYPE" = "rc" ]; then
+            EXTENSION_TAG="v${MATTER_VERSION}-rc${RC_NUMBER}"
+            SUBLABEL="Silicon Labs Matter ${FULL_MATTER_VERSION}-rc${RC_NUMBER}"
+          else
+            EXTENSION_TAG="v${MATTER_VERSION}"
+            SUBLABEL="Silicon Labs Matter ${FULL_MATTER_VERSION}"
+          fi
+          echo "extension_tag=${EXTENSION_TAG}" >> $GITHUB_OUTPUT
+          echo "sublabel=${SUBLABEL}" >> $GITHUB_OUTPUT
+          echo "### Version Metadata" >> $GITHUB_STEP_SUMMARY
+          echo "- **Release Type:** ${RELEASE_TYPE}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Tag:** ${EXTENSION_TAG}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Branch:** ${BRANCH_NAME}" >> $GITHUB_STEP_SUMMARY
+          echo "- **SubLabel:** ${SUBLABEL}" >> $GITHUB_STEP_SUMMARY
+          echo "::notice::Extension Tag: ${EXTENSION_TAG}"
+      
+      # TODO: For production, remove this PAT masking step (GitHub App token is auto-masked)
+      - name: Mask PAT token
+        run: echo "::add-mask::${{ secrets.STAGING_REPO_TOKEN }}"
+      
+      - name: Clone staging repository
+        run: |
+          set -e
+          echo "Cloning staging repository from: ${{ env.STAGING_REPO_URL }}"
+          echo "Target branch: ${{ env.STAGING_BRANCH }}"
+          git config --global user.name "GitHub Actions"
+          git config --global user.email "actions@github.com"
+          cd ..
+          mkdir -p staging
+          cd staging
+          git clone --depth 1 --branch "${{ env.STAGING_BRANCH }}" "${{ env.STAGING_REPO_URL }}" matter_extension
+          cd matter_extension
+          rm -fr *
+          echo "Staging repository cloned and cleaned"
+          echo "Current branch: $(git branch --show-current)"
+      
+      - name: Run stage_extension.py
+        run: |
+          set -e
+          echo "Running stage_extension.py..."
+          python3 slc/stage_extension.py "$(dirname "$(pwd)")/staging"
+          echo "Content staged successfully"
+      
+      - name: Update prop.subLabel in staging
+        run: |
+          set -e
+          cd "$(dirname "$(pwd)")/staging/matter_extension"
+          SUBLABEL="${{ steps.version.outputs.sublabel }}"
+          echo "Updating prop.subLabel to: ${SUBLABEL}"
+          if [ -f "matter.slsdk" ]; then
+            python3 -c 'import re, sys; content = open("matter.slsdk", "r").read(); sublabel = sys.argv[1]; version_part = sublabel.replace("Silicon Labs Matter ", ""); new_line = "prop.subLabel=Silicon\\\\\\\\ Labs\\\\\\\\ Matter\\\\\\\\ " + version_part; content = re.sub(r"^prop\.subLabel=.*$", new_line, content, flags=re.MULTILINE); open("matter.slsdk", "w").write(content)' "${SUBLABEL}"
+            echo "Updated matter.slsdk"
+          else
+            echo "::warning::matter.slsdk not found in staging"
+          fi
+      
+      - name: Normalize README.md in staging
+        run: |
+          set -e
+          cd "$(dirname "$(pwd)")/staging/matter_extension"
+          echo "Normalizing README.md..."
+          printf '%s\n\n%s' '[![Silicon Labs](./docs/images/silabs-logo.jpg)](https://www.silabs.com)' 'This repository contains the code for the Simplicity Studio extension for Matter. The content of the repository is meant to be accessed through Silicon Labs Simplicity Studio and should not be used directly' > README.md
+          echo "README.md normalized"
+      
+      - name: Commit staged content
+        run: |
+          set -e
+          cd "$(dirname "$(pwd)")/staging/matter_extension"
+          EXTENSION_TAG="${{ steps.version.outputs.extension_tag }}"
+          echo "Creating commit..."
+          git add -A
+          if git diff --cached --quiet; then
+            echo "::warning::No changes to commit"
+            echo "has_changes=false" >> $GITHUB_ENV
+          else
+            git commit -m "Silicon Labs Matter Extension ${EXTENSION_TAG}"
+            echo "Commit created"
+            echo "has_changes=true" >> $GITHUB_ENV
+          fi
+      
+      - name: Create tags
+        if: env.has_changes == 'true'
+        run: |
+          set -e
+          cd "$(dirname "$(pwd)")/staging/matter_extension"
+          EXTENSION_TAG="${{ steps.version.outputs.extension_tag }}"
+          echo "Creating tag: ${EXTENSION_TAG}"
+          git tag -a "${EXTENSION_TAG}" -m "Silicon Labs Matter Extension ${EXTENSION_TAG}"
+          echo "Created tag: ${EXTENSION_TAG}"
+          echo "### Tag Created" >> $GITHUB_STEP_SUMMARY
+          echo "- ${EXTENSION_TAG}" >> $GITHUB_STEP_SUMMARY
+      
+      - name: Push commits and tags
+        if: env.has_changes == 'true'
+        run: |
+          set -e
+          cd "$(dirname "$(pwd)")/staging/matter_extension"
+          echo "Pushing to staging repository branch: ${{ env.STAGING_BRANCH }}..."
+          # TODO: For production, replace with: ${{ steps.generate_app_token.outputs.token }}
+          REPO_URL_WITH_TOKEN=$(echo "${{ env.STAGING_REPO_URL }}" | sed "s|https://|https://x-access-token:${{ secrets.STAGING_REPO_TOKEN }}@|")
+          git remote set-url origin "${REPO_URL_WITH_TOKEN}"
+          git push origin "${{ env.STAGING_BRANCH }}"
+          echo "Pushed commits"
+          git push origin --tags
+          echo "Pushed tags"
+          echo "::notice::Successfully pushed to staging repository"
+      
+      - name: Create GitHub Release Draft
+        if: env.has_changes == 'true' && inputs.release_type == 'release'
+        env:
+          GH_TOKEN: ${{ secrets.STAGING_REPO_TOKEN }}
+        run: |
+          set -e
+          EXTENSION_TAG="${{ steps.version.outputs.extension_tag }}"
+          MATTER_VERSION="${{ steps.read_version.outputs.matter_version }}"
+          SDK_VERSION="${{ steps.read_version.outputs.sdk_version }}"
+          FULL_VERSION="${{ steps.version.outputs.sublabel }}"
+          VERSION_WITH_SUFFIX=$(echo "${FULL_VERSION}" | sed 's/Silicon Labs Matter //')
+          
+          echo "Creating draft release ${EXTENSION_TAG}..."
+          echo "Matter version: ${MATTER_VERSION}"
+          echo "SDK version: ${SDK_VERSION}"
+          
+          # Create release notes file matching the exact format from v2.7.0 with proper links
+          cat > release_notes.md << 'NOTES_EOF'
+          # **Matter Extension v{VERSION} Release Notes**
+          
+          ## **Silicon Labs Matter Simplicity SDK Extension v{VERSION}**
+          
+          **This release is supported for use with Simplicity Studio.** For CLI based experience, use the [SiliconLabsSoftware/matter_extension](https://github.com/SiliconLabsSoftware/matter_extension) repo.
+          
+          ### Releases Notes
+          
+          Release notes are provided here: **[sisdk-matter-release-notes](https://docs.silabs.com/sisdk-release-notes/{SDK_VERSION}/sisdk-matter-release-notes/)**
+          
+          ### Documentation
+          
+          Documentation is provided here: **[docs.silabs.com/matter/{DOCS_VERSION}/matter-start/](https://docs.silabs.com/matter/{DOCS_VERSION}/matter-start/)**
+          NOTES_EOF
+          
+          # Substitute the version variables
+          sed -i.bak "s|{VERSION}|${VERSION_WITH_SUFFIX}|g" release_notes.md
+          sed -i.bak "s|{DOCS_VERSION}|${MATTER_VERSION}|g" release_notes.md
+          sed -i.bak "s|{SDK_VERSION}|${SDK_VERSION}|g" release_notes.md
+          rm -f release_notes.md.bak
+          
+          echo "Release notes content:"
+          cat release_notes.md
+          echo ""
+          
+          REPO_NAME=$(echo "${{ env.STAGING_REPO_URL }}" | sed 's|https://github.com/||' | sed 's|.git||')
+          
+          gh release create "${EXTENSION_TAG}" \
+            --repo "${REPO_NAME}" \
+            --target "${{ env.STAGING_BRANCH }}" \
+            --title "${EXTENSION_TAG}" \
+            --notes-file release_notes.md \
+            --draft
+          
+          echo "::notice::Draft release created: ${EXTENSION_TAG}"
+          echo "### GitHub Release Created" >> $GITHUB_STEP_SUMMARY
+          echo "- **Tag:** ${EXTENSION_TAG}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Version:** ${VERSION_WITH_SUFFIX}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Status:** Draft (ready for manual review and publishing)" >> $GITHUB_STEP_SUMMARY
+          echo "- **URL:** https://github.com/${REPO_NAME}/releases/tag/${EXTENSION_TAG}" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Next steps:**" >> $GITHUB_STEP_SUMMARY
+          echo "1. Upload release assets to the draft" >> $GITHUB_STEP_SUMMARY
+          echo "2. Update release notes from Confluence" >> $GITHUB_STEP_SUMMARY
+          echo "3. Publish the release when ready" >> $GITHUB_STEP_SUMMARY
