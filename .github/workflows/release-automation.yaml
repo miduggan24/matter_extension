@@ -14,15 +14,10 @@ on:
         description: 'RC number (required for RC releases)'
         required: false
         type: string
-      build_number:
-        description: 'Matter build number'
-        required: true
-        type: string
 
 env:
   STAGING_DIR: staging_repo
   STAGING_REPO_URL: https://github.com/miduggan24/matter_extension_staging.git
-  ARTIFACTORY_BASE_URL: https://artifactory.silabs.net/artifactory/gsdk-generic-staging/matter_extension_github
 
 jobs:
   release:
@@ -75,7 +70,6 @@ jobs:
           MATTER_VERSION="${{ steps.read_version.outputs.matter_version }}"
           BRANCH_NAME="${{ steps.read_version.outputs.branch_name }}"
           RC_NUMBER="${{ inputs.rc_number }}"
-          BUILD_NUMBER="${{ inputs.build_number }}"
           if [ "$RELEASE_TYPE" = "rc" ] && [ -z "$RC_NUMBER" ]; then
             echo "Error: RC number is required for RC releases"
             exit 1
@@ -100,58 +94,6 @@ jobs:
           echo "- **SubLabel:** ${SUBLABEL}" >> $GITHUB_STEP_SUMMARY
           echo "::notice::Extension Tag: ${EXTENSION_TAG}"
       
-      - name: Download build binaries from Artifactory
-        id: download_artifacts
-        run: |
-          set -e
-          BUILD_NUMBER="${{ inputs.build_number }}"
-          BRANCH_NAME="${{ steps.version.outputs.branch_name }}"
-          mkdir -p artifacts
-          ARTIFACT_URL="${{ env.ARTIFACTORY_BASE_URL }}/${BRANCH_NAME}/${BUILD_NUMBER}/build-binaries.zip"
-          echo "Downloading build binaries from: ${ARTIFACT_URL}"
-          MAX_RETRIES=3
-          RETRY_COUNT=0
-          ARTIFACT_FILE="build-binaries.zip"
-          while [ $RETRY_COUNT -lt $MAX_RETRIES ]; do
-            if curl -f -L -o "artifacts/${ARTIFACT_FILE}" "${ARTIFACT_URL}"; then
-              echo "Successfully downloaded build binaries"
-              break
-            else
-              RETRY_COUNT=$((RETRY_COUNT + 1))
-              if [ $RETRY_COUNT -lt $MAX_RETRIES ]; then
-                echo "Download failed, retrying ($RETRY_COUNT/$MAX_RETRIES)..."
-                sleep 5
-              else
-                echo "::error::Failed to download build binaries after $MAX_RETRIES attempts"
-                exit 1
-              fi
-            fi
-          done
-          echo "Validating ZIP integrity..."
-          if ! unzip -t "artifacts/${ARTIFACT_FILE}" > /dev/null; then
-            echo "::error::Downloaded ZIP file is corrupted"
-            exit 1
-          fi
-          echo "Artifact validation passed"
-          ls -lh artifacts/
-          echo "Preview of build-binaries.zip contents:"
-          unzip -l "artifacts/${ARTIFACT_FILE}" | head -30
-          echo "artifact_path=artifacts/${ARTIFACT_FILE}" >> $GITHUB_OUTPUT
-          
-      - name: Extract and generate metadata
-        run: |
-          set -e
-          ARTIFACT_FILE="build-binaries.zip"
-          echo "Extracting build binaries..."
-          unzip -q "artifacts/${ARTIFACT_FILE}" -d demos
-          echo "Generating matter_demos.xml metadata..."
-          python3 slc/script/generate_metadata.py demos/
-          if [ ! -f "matter_demos.xml" ]; then
-            echo "::error::matter_demos.xml was not generated"
-            exit 1
-          fi
-          echo "Metadata generated successfully"
-
       - name: Clone staging repository
         run: |
           set -e
