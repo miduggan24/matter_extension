@@ -1,0 +1,36 @@
+name: Update matter_sdk Submodule
+
+permissions:
+  contents: write  # Needed for GITHUB_TOKEN to create PRs
+  pull-requests: write
+
+on:
+  schedule:
+    - cron: '0 5 * * *' # Daily at midnight
+  workflow_dispatch:
+
+jobs:
+  update-matter_sdk:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix: 
+        target_branch: >-
+          ${{
+            github.event_name == 'schedule'
+              && fromJson('["main","release_2.8-1.5"]')
+              || fromJson(format('["{0}"]', github.ref_name))
+          }}
+    steps:
+      - name: Checkout target branch
+        uses: actions/checkout@v6
+        with:
+          ref: ${{ matrix.target_branch }}
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Update matter_sdk submodule
+        uses: SiliconLabsSoftware/matter_update_submodules@bump_same_pr
+        with:
+          target_branch: ${{ matrix.target_branch }}
+          # Temp: commented out for testing with default GITHUB_TOKEN
+          # app-id: ${{ vars.SILABSSW_MATTER_CI_BOT_APP_ID }}
+          # private-key: ${{ secrets.SILABSSW_MATTER_CI_BOT_APP_PRIVATE_KEY }}
