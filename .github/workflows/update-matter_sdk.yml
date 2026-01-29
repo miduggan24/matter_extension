@@ -13,7 +13,6 @@ on:
         description: 'Target branch to update'
         required: false
         default: 'main'
-  push: # Temp for testing 
 
 jobs:
   update-matter_sdk:
