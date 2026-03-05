@@ -12,7 +12,8 @@ jobs:
   update-matter_sdk:
     runs-on: ubuntu-latest
     permissions:
-      contents: write  # required for shared action to push branch and create PR
+      contents: write
+      pull-requests: write  # required for create-pull-request in shared action
     strategy:
       matrix:
         target_branch: >-
