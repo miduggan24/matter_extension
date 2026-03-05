@@ -6,11 +6,10 @@ Confluence: "If new files are added/removed in the matter_extension code,
 manually edit ... matter.slce.extra" (automated).
 """
 
-import argparse
 import os
 import sys
 from pathlib import Path
-from typing import List, Optional
+from typing import List
 
 DEFAULT_ROOTS = [
     "slc",
@@ -55,32 +54,16 @@ def collect_paths(
     return results
 
 
-def main(argv: Optional[List[str]] = None) -> int:
-    parser = argparse.ArgumentParser(description="Update matter_extension paths in matter.slce.extra")
-    parser.add_argument(
-        "--roots",
-        nargs="+",
-        default=DEFAULT_ROOTS,
-        help="Root dirs to scan (default: slc provision docs tools jenkins_integration silabs_utils src)",
-    )
-    parser.add_argument(
-        "--slce-extra",
-        type=Path,
-        default=SLCE_EXTRA,
-        help="Path to matter.slce.extra",
-    )
-    parser.add_argument("--include-dirs", action="store_true", help="Include directory entries")
-    args = parser.parse_args(argv or [])
-
+def main() -> int:
     root_path = Path(__file__).resolve().parent.parent.parent
     os.chdir(root_path)
 
     all_paths: List[Path] = []
-    for root_str in args.roots:
+    for root_str in DEFAULT_ROOTS:
         r = Path(root_str)
         if not r.exists() or not r.is_dir():
             continue
-        paths = collect_paths(r, include_dirs=args.include_dirs, exclude_dirs=EXCLUDE_DIRS)
+        paths = collect_paths(r, include_dirs=False, exclude_dirs=EXCLUDE_DIRS)
         all_paths.extend(paths)
 
     seen = set()
@@ -91,7 +74,7 @@ def main(argv: Optional[List[str]] = None) -> int:
             seen.add(key)
             unique.append(p)
 
-    target = args.slce_extra
+    target = SLCE_EXTRA
     if not target.exists():
         print(f"Error: {target} not found", file=sys.stderr)
         return 1
@@ -130,4 +113,4 @@ def main(argv: Optional[List[str]] = None) -> int:
 
 
 if __name__ == "__main__":
-    raise SystemExit(main(sys.argv[1:]))
+    raise SystemExit(main())
