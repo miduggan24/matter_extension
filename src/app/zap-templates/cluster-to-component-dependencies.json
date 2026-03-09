@@ -540,9 +540,9 @@
     ]
   },
   {
-    "clusterCode": "unit testing-server",
+    "clusterCode": "test cluster.removed-server",
     "value": [
-      "%extension-matter%matter_test_cluster"
+      "%extension-matter%matter_test_cluster.removed"
     ]
   },
   {
