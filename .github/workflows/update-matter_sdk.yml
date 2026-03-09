@@ -106,7 +106,6 @@ jobs:
           python3 slc/script/remove_obsolete_cluster_components.py
           python3 slc/script/gen_static_zap_includes.py
           python3 slc/script/get_slce_extra_paths.py
-          python3 slc/script/update_slce_extra_extension_paths.py
 
       - name: Check for changes
         if: steps.find_pr.outputs.pr_number != ''

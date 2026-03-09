@@ -1,57 +1,78 @@
 #!/usr/bin/env python3
 """
-Remove cluster components from slc/component/matter-clusters when the
-corresponding cluster no longer exists in third_party/matter_sdk/src/app/clusters.
-Matches Confluence: "If a cluster is removed ... Manually remove the same
-component from slc/component/matter-clusters" (automated).
+Remove obsolete cluster components from slc/component/matter-clusters/.
+Compares committed vs current cluster-to-component-dependencies.json
+to detect removed clusters and deletes their corresponding .slcc files.
 Run after gen_cluster_components.py.
 """
 
+import json
 import os
 import pathlib
+import subprocess
 
 root = str(pathlib.Path(os.path.realpath(__file__)).parent.parent.parent)
 os.chdir(root)
 
-CLUSTER_DIR = pathlib.Path("third_party/matter_sdk/src/app/clusters")
+DEPS_FILE = "src/app/zap-templates/cluster-to-component-dependencies.json"
 COMPONENT_DIR = pathlib.Path("slc/component/matter-clusters")
 
+def _git_show(path):
+    """Return committed content of a file"""
+    try:
+        result = subprocess.run(
+            ["git", "show", f"HEAD:{path}"],
+            capture_output=True, text=True, check=True,
+        )
+        return result.stdout
+    except subprocess.CalledProcessError:
+        return None
 
-def _valid_cluster_names():
-    """Set of clusternames that have a corresponding dir in the SDK."""
-    valid = set()
-    if not CLUSTER_DIR.exists():
-        return valid
-    for subdir in os.listdir(CLUSTER_DIR):
-        subdir_path = CLUSTER_DIR / subdir
-        if not subdir_path.is_dir():
-            continue
-        component_name = subdir.replace("-", "_")
-        clustername = component_name.replace("_server", "").replace("_client", "")
-        valid.add(clustername)
-        if "client" in component_name:
-            valid.add(clustername + "_client")
-    return valid
-
+def _names_from_deps(text):
+    """Extract component names from deps JSON text."""
+    names = set()
+    if not text:
+        return names
+    try:
+        data = json.loads(text)
+    except (json.JSONDecodeError, ValueError):
+        return names
+    prefix = "%extension-matter%matter_"
+    for entry in data:
+        for value in entry.get("value", []):
+            if isinstance(value, str) and value.startswith(prefix):
+                names.add(value[len(prefix):])
+    return names
 
 def main():
     if not COMPONENT_DIR.exists():
         print("Component dir not found:", COMPONENT_DIR)
         return 0
-    valid = _valid_cluster_names()
-    removed = []
-    for f in os.listdir(COMPONENT_DIR):
-        if not f.endswith(".slcc") or not f.startswith("matter_"):
-            continue
-        name = f[7:-5]  # strip "matter_" and ".slcc"
-        if name not in valid:
-            path = COMPONENT_DIR / f
-            path.unlink()
-            removed.append(f)
-    if removed:
-        print("Removed obsolete cluster components:", ", ".join(sorted(removed)))
-    return 0
 
+    old_names = _names_from_deps(_git_show(DEPS_FILE))
+
+    try:
+        new_text = pathlib.Path(DEPS_FILE).read_text(encoding="utf-8")
+    except OSError:
+        print("Error: could not read", DEPS_FILE)
+        return 1
+    new_names = _names_from_deps(new_text)
+
+    removed_clusters = old_names - new_names
+
+    if not removed_clusters:
+        return 0
+
+    deleted = []
+    for name in sorted(removed_clusters):
+        path = COMPONENT_DIR / f"matter_{name}.slcc"
+        if path.exists():
+            path.unlink()
+            deleted.append(path.name)
+
+    if deleted:
+        print("Removed obsolete cluster components:", ", ".join(deleted))
+    return 0
 
 if __name__ == "__main__":
     raise SystemExit(main())
