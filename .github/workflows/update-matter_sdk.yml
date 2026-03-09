@@ -34,7 +34,6 @@ jobs:
         with:
           target_branch: ${{ matrix.target_branch }}
           # When set, the shared action updates the submodule to this ref (e.g. testing branch).
-          submodule_branch: testing/validate-extension-scripts
           # app-id: ${{ vars.SILABSSW_MATTER_CI_BOT_APP_ID }}
           # private-key: ${{ secrets.SILABSSW_MATTER_CI_BOT_APP_PRIVATE_KEY }}
 
