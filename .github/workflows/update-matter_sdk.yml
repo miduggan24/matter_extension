@@ -16,11 +16,14 @@ jobs:
     steps:
       - id: branches
         run: |
-          if [ "${{ github.event_name }}" == "schedule" ]; then
+          if [ "$EVENT_NAME" == "schedule" ]; then
             echo 'value=["main","release_2.8-1.5"]' >> $GITHUB_OUTPUT
           else
-            echo 'value=["${{ github.ref_name }}"]' >> $GITHUB_OUTPUT
+            echo "value=[\"$REF_NAME\"]" >> $GITHUB_OUTPUT
           fi
+        env:
+          EVENT_NAME: ${{ github.event_name }}
+          REF_NAME: ${{ github.ref_name }}
 
   update-matter_sdk:
     runs-on: ubuntu-latest
@@ -63,14 +66,16 @@ jobs:
       #     app-id: ${{ vars.SILABSSW_MATTER_CI_BOT_APP_ID }}
       #     private-key: ${{ secrets.SILABSSW_MATTER_CI_BOT_APP_PRIVATE_KEY }}
 
+      # Look for the PR created by matter_update_submodules (branch: update-matter-sdk-<target_branch>)
       - name: Find matter_sdk submodule bump PR
         id: find_pr
         run: |
-          PR=$(gh pr list --repo ${{ github.repository }} --base "${{ matrix.target_branch }}" --state open --json number,headRefName,title --jq '.[] | select(.title | test("matter_sdk|third_party/matter_sdk|submodule"; "i")) | "\(.number) \(.headRefName)"' | head -1)
+          PR_HEAD_BRANCH="update-matter-sdk-$TARGET_BRANCH"
+          PR=$(gh pr list --repo "$REPO" --base "$TARGET_BRANCH" --state open --json number,headRefName,title --jq --arg head "$PR_HEAD_BRANCH" '.[] | select(.headRefName == $head) | "\(.number) \(.headRefName)"' | head -1)
           if [ -z "$PR" ]; then
             echo "pr_number=" >> $GITHUB_OUTPUT
             echo "head_ref=" >> $GITHUB_OUTPUT
-            echo "No open matter_sdk submodule bump PR found for base ${{ matrix.target_branch }}; skipping SLC scripts."
+            echo "No open matter_sdk submodule bump PR found for base $TARGET_BRANCH (expected head branch: $PR_HEAD_BRANCH); skipping SLC scripts."
             exit 0
           fi
           read -r pr_num head_ref <<< "$PR"
@@ -78,6 +83,8 @@ jobs:
           echo "head_ref=$head_ref" >> $GITHUB_OUTPUT
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          REPO: ${{ github.repository }}
+          TARGET_BRANCH: ${{ matrix.target_branch }}
 
       - name: Checkout PR branch
         if: steps.find_pr.outputs.pr_number != ''
