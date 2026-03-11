@@ -70,12 +70,12 @@ jobs:
       - name: Find matter_sdk submodule bump PR
         id: find_pr
         run: |
-          PR_HEAD_BRANCH="update-matter-sdk-$TARGET_BRANCH"
-          PR=$(gh pr list --repo "$REPO" --base "$TARGET_BRANCH" --state open --json number,headRefName,title --jq --arg head "$PR_HEAD_BRANCH" '.[] | select(.headRefName == $head) | "\(.number) \(.headRefName)"' | head -1)
+          want="update-matter-sdk-$TARGET_BRANCH"
+          PR=$(gh pr list --repo "$REPO" --base "$TARGET_BRANCH" --state open --json number,headRefName | jq -r --arg h "$want" '.[] | select(.headRefName == $h or (.headRefName | endswith(":" + $h))) | "\(.number) \(.headRefName)"' | head -1)
           if [ -z "$PR" ]; then
             echo "pr_number=" >> $GITHUB_OUTPUT
             echo "head_ref=" >> $GITHUB_OUTPUT
-            echo "No open matter_sdk submodule bump PR found for base $TARGET_BRANCH (expected head branch: $PR_HEAD_BRANCH); skipping SLC scripts."
+            echo "No open matter_sdk submodule bump PR found for base $TARGET_BRANCH (expected head: $want); skipping SLC scripts."
             exit 0
           fi
           read -r pr_num head_ref <<< "$PR"
