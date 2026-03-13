@@ -13,6 +13,7 @@ provides:
   - name: matter_zone_management
 source:
   - path: third_party/matter_sdk/src/app/clusters/zone-management-server/zone-management-server.cpp
+  - path: third_party/matter_sdk/src/app/clusters/zone-management-server/ZoneManagementCluster.cpp
 include:
   - path: third_party/matter_sdk/src/app/clusters/zone-management-server
     file_list:

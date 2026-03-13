@@ -9,10 +9,10 @@ quality: production
 metadata:
   sbom:
     license: "Apache 2.0"
-requires:
-  - name: matter_cluster_building_blocks
 provides:
   - name: matter_closure_dimension
+requires:
+  - name: matter_cluster_building_blocks
 source:
   - path: third_party/matter_sdk/src/app/clusters/closure-dimension-server/closure-dimension-cluster-logic.cpp
   - path: third_party/matter_sdk/src/app/clusters/closure-dimension-server/closure-dimension-matter-context.cpp
