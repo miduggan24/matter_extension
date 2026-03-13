@@ -4,8 +4,6 @@ permissions:
   contents: read
 
 on:
-  schedule:
-    - cron: '0 5 * * *' # Daily at midnight
   workflow_dispatch:
 
 jobs:
