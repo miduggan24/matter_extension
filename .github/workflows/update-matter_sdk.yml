@@ -112,6 +112,7 @@ jobs:
         run: |
           python3 slc/script/gen_cluster_components.py
           python3 slc/script/remove_obsolete_cluster_components.py
+          python3 slc/script/sync_sdk_include_file_lists.py
           python3 slc/script/gen_static_zap_includes.py
           python3 slc/script/get_slce_extra_paths.py
 
