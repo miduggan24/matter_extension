@@ -1,25 +1,27 @@
 category: Clusters|General
-description: >
-  Implementation of the chime Server Cluster.
-  The user has to enable the chime Server Cluster in the ZCL Advanced Platform (ZAP) tool in order to enable this functionality.
+description: 'Implementation of the chime Server Cluster. The user has to enable the
+  chime Server Cluster in the ZCL Advanced Platform (ZAP) tool in order to enable
+  this functionality.
+
+  '
 id: matter_chime
 package: matter
 label: chime Server Cluster
 quality: production
 metadata:
   sbom:
-    license: "Apache 2.0"
+    license: Apache 2.0
 provides:
-  - name: matter_chime
+- name: matter_chime
 source:
-  - path: third_party/matter_sdk/src/app/clusters/chime-server/ChimeCluster.cpp
-  - path: third_party/matter_sdk/src/app/clusters/chime-server/CodegenIntegration.cpp
+- path: third_party/matter_sdk/src/app/clusters/chime-server/ChimeCluster.cpp
+- path: third_party/matter_sdk/src/app/clusters/chime-server/CodegenIntegration.cpp
 include:
-  - path: third_party/matter_sdk/src/app/clusters/chime-server
-    file_list:
-      - path: chime-server.h
-      - path: ChimeCluster.h
-      - path: CodegenIntegration.h
+- path: third_party/matter_sdk/src/app/clusters/chime-server
+  file_list:
+  - path: ChimeCluster.h
+  - path: CodegenIntegration.h
+  - path: chime-server.h
 template_contribution:
-  - name: component_catalog
-    value: matter_chime
+- name: component_catalog
+  value: matter_chime

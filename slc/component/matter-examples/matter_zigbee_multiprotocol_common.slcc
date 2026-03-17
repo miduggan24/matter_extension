@@ -1,43 +1,44 @@
 category: Matter Zigbee CMP Application
 label: Matter Zigbee common
 package: matter
-description: >
-  Provides the common data model and integration logic used by Matter–Zigbee multiprotocol (CMP) applications.
-  This component links Zigbee clusters and callbacks to the Matter data model, enabling coordinated behavior and state synchronization between the two stacks.
+description: 'Provides the common data model and integration logic used by Matter–Zigbee
+  multiprotocol (CMP) applications. This component links Zigbee clusters and callbacks
+  to the Matter data model, enabling coordinated behavior and state synchronization
+  between the two stacks.
+
+  '
 id: matter_zigbee_multiprotocol_common
 quality: production
 metadata:
   sbom:
     license: MSLA
 requires:
-  - name: matter_zigbee_cmp
-  - name: matter_zigbee_type
-    # RAIL components that enable Concurrent Listening on series 2.
-    # We keep it in common to respect grandfather configuration
-  - name: rail_util_ieee802154_fast_channel_switching
-    condition: [device_series_2]
-  - name: rail_util_dma
-    condition: [device_series_2]
-  # Rail PHY selection needed with rail mux for series3
-  - name: sl_rail_util_ieee802154_phy_select
-    condition: [ device_generic_family_sixx301 ]
+- name: matter_zigbee_cmp
+- name: matter_zigbee_type
+- name: rail_util_ieee802154_fast_channel_switching
+  condition:
+  - device_series_2
+- name: rail_util_dma
+  condition:
+  - device_series_2
+- name: sl_rail_util_ieee802154_phy_select
+  condition:
+  - device_generic_family_sixx301
 provides:
-  - name: matter_zigbee_multiprotocol_common
+- name: matter_zigbee_multiprotocol_common
 recommends:
-  - id: matter_zigbee_concurrent
+- id: matter_zigbee_concurrent
 include:
-  - path: third_party/matter_sdk/examples/platform/silabs/cmp
-    file_list:
-      - path: MultiProtocolDataModelHelper.h
-      - path: sl-matter-attribute-storage.h
-      - path: ZigbeeCallbacks.h
-
+- path: third_party/matter_sdk/examples/platform/silabs/cmp
+  file_list:
+  - path: MultiProtocolDataModelHelper.h
+  - path: ZigbeeCallbacks.h
+  - path: sl-matter-attribute-storage.h
 source:
-  - path: third_party/matter_sdk/examples/platform/silabs/cmp/MultiProtocolDataModelHelper.cpp
-  - path: third_party/matter_sdk/examples/platform/silabs/cmp/ZigbeeCallbacks.cpp
-
+- path: third_party/matter_sdk/examples/platform/silabs/cmp/MultiProtocolDataModelHelper.cpp
+- path: third_party/matter_sdk/examples/platform/silabs/cmp/ZigbeeCallbacks.cpp
 template_contribution:
-  - name: component_catalog
-    value: multiprotocol_zigbee_matter_common
+- name: component_catalog
+  value: multiprotocol_zigbee_matter_common
 ui_hints:
   visibility: basic

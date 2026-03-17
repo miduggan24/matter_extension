@@ -1,26 +1,98 @@
 category: Matter|Core
 define:
--   name: CHIP_HAVE_CONFIG_H
-    value: '1'
--   name: RADIO_CONFIG_DMP_SUPPORT
-    value: '1'
+- name: CHIP_HAVE_CONFIG_H
+  value: '1'
+- name: RADIO_CONFIG_DMP_SUPPORT
+  value: '1'
 description: Provides encoding and decoding utilities for Matter data model structures.
 id: encode_decode
 include:
--   path: third_party/matter_sdk/src/app/
-    file_list:
-    -   path: data-model/StructDecodeIterator.h
-    -   path: data-model/WrappedStructEncoder.h
+- path: third_party/matter_sdk/src/app/
+  file_list:
+  - path: AppConfig.h
+  - path: AttributeAccessInterface.h
+  - path: AttributeAccessInterfaceCache.h
+  - path: AttributeAccessInterfaceRegistry.h
+  - path: AttributeAccessToken.h
+  - path: AttributeEncodeState.h
+  - path: AttributePathExpandIterator.h
+  - path: AttributePathParams.h
+  - path: AttributeReportBuilder.h
+  - path: AttributeValueDecoder.h
+  - path: AttributeValueEncoder.h
+  - path: BufferedReadCallback.h
+  - path: CASEClient.h
+  - path: CASEClientPool.h
+  - path: CASESessionManager.h
+  - path: ChunkedWriteCallback.h
+  - path: ClusterStateCache.h
+  - path: CommandHandler.h
+  - path: CommandHandlerExchangeInterface.h
+  - path: CommandHandlerImpl.h
+  - path: CommandHandlerInterface.h
+  - path: CommandHandlerInterfaceRegistry.h
+  - path: CommandHandlerInterfaceShim.h
+  - path: CommandPathParams.h
+  - path: CommandPathRegistry.h
+  - path: CommandResponseHelper.h
+  - path: CommandResponseSender.h
+  - path: CommandSender.h
+  - path: CommandSenderLegacyCallback.h
+  - path: ConcreteAttributePath.h
+  - path: ConcreteClusterPath.h
+  - path: ConcreteCommandPath.h
+  - path: ConcreteEventPath.h
+  - path: DataVersionFilter.h
+  - path: DefaultSafeAttributePersistenceProvider.h
+  - path: DeviceLoadStatusProvider.h
+  - path: DeviceProxy.h
+  - path: EventHeader.h
+  - path: EventLogging.h
+  - path: EventLoggingDelegate.h
+  - path: EventLoggingTypes.h
+  - path: EventManagement.h
+  - path: EventPathParams.h
+  - path: EventReporter.h
+  - path: FailSafeContext.h
+  - path: GenericEventManagementTestEventTriggerHandler.h
+  - path: GlobalAttributes.h
+  - path: InteractionModelDelegatePointers.h
+  - path: InteractionModelEngine.h
+  - path: InteractionModelHelper.h
+  - path: InteractionModelTimeout.h
+  - path: OTAUserConsentCommon.h
+  - path: OperationalSessionSetup.h
+  - path: OperationalSessionSetupPool.h
+  - path: PendingResponseTracker.h
+  - path: PendingResponseTrackerImpl.h
+  - path: ReadClient.h
+  - path: ReadHandler.h
+  - path: ReadPrepareParams.h
+  - path: RequiredPrivilege.h
+  - path: SafeAttributePersistenceProvider.h
+  - path: SimpleSubscriptionResumptionStorage.h
+  - path: SpecificationDefinedRevisions.h
+  - path: StatusResponse.h
+  - path: StorageDelegateWrapper.h
+  - path: SubscriptionResumptionSessionEstablisher.h
+  - path: SubscriptionResumptionStorage.h
+  - path: SubscriptionStats.h
+  - path: SubscriptionsInfoProvider.h
+  - path: TestEventTriggerDelegate.h
+  - path: TimedHandler.h
+  - path: TimedRequest.h
+  - path: WriteClient.h
+  - path: WriteHandler.h
 label: encode_decode
 package: matter
 provides:
--   name: matter_encode_decode
+- name: matter_encode_decode
 quality: production
 metadata:
   sbom:
-    license: "Apache 2.0"
+    license: Apache 2.0
 source:
--   path: third_party/matter_sdk/src/app/data-model/StructDecodeIterator.cpp
--   path: third_party/matter_sdk/src/app/data-model/WrappedStructEncoder.cpp
+- path: third_party/matter_sdk/src/app/data-model/StructDecodeIterator.cpp
+- path: third_party/matter_sdk/src/app/data-model/WrappedStructEncoder.cpp
 ui_hints:
-    visibility: never
+  visibility: never

@@ -8,14 +8,30 @@ metadata:
   sbom:
     license: Zlib
 provides:
-  - name: matter_memory_monitoring
+- name: matter_memory_monitoring
 source:
-  - path: third_party/matter_sdk/examples/platform/silabs/MemMonitoring.cpp
-
+- path: third_party/matter_sdk/examples/platform/silabs/MemMonitoring.cpp
 include:
-  - path: third_party/matter_sdk/examples/platform/silabs/
-    file_list:
-      - path: MemMonitoring.h
+- path: third_party/matter_sdk/examples/platform/silabs/
+  file_list:
+  - path: BaseAppEvent.h
+  - path: BaseApplication.h
+  - path: FreeRTOSConfig.h
+  - path: FreeRTOSRuntimeStats.h
+  - path: LEDWidget.h
+  - path: MatterConfig.h
+  - path: MatterShell.h
+  - path: MemMonitoring.h
+  - path: OTAConfig.h
+  - path: PigweedLogger.h
+  - path: Rpc.h
+  - path: Si70xxSensor.h
+  - path: SoftwareFaultReports.h
+  - path: board_config.h
+  - path: silabs_creds.h
+  - path: silabs_utils.h
+  - path: sl_systemview_config.h
+  - path: uart.h
 define:
-  - name: HEAP_MONITORING
-    value: 1
+- name: HEAP_MONITORING
+  value: 1

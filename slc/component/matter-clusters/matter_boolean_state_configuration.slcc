@@ -1,28 +1,30 @@
 category: Clusters|General
-description: >
-  Implementation of the Boolean State Configuration Server Cluster.
-  The user has to enable the Boolean State Configuration Server Cluster in the ZCL Advanced Platform (ZAP) tool in order to enable this functionality.
+description: 'Implementation of the Boolean State Configuration Server Cluster. The
+  user has to enable the Boolean State Configuration Server Cluster in the ZCL Advanced
+  Platform (ZAP) tool in order to enable this functionality.
+
+  '
 id: matter_boolean_state_configuration
 package: matter
 label: Boolean State Configuration Server Cluster
 quality: production
 metadata:
   sbom:
-    license: "Apache 2.0"
+    license: Apache 2.0
 provides:
-  - name: matter_boolean_state_configuration
+- name: matter_boolean_state_configuration
 source:
-  - path: third_party/matter_sdk/src/app/clusters/boolean-state-configuration-server/BooleanStateConfigurationCluster.cpp
-  - path: third_party/matter_sdk/src/app/clusters/boolean-state-configuration-server/BooleanStateConfigurationTestEventTriggerHandler.cpp
-  - path: third_party/matter_sdk/src/app/clusters/boolean-state-configuration-server/CodegenIntegration.cpp
+- path: third_party/matter_sdk/src/app/clusters/boolean-state-configuration-server/BooleanStateConfigurationCluster.cpp
+- path: third_party/matter_sdk/src/app/clusters/boolean-state-configuration-server/BooleanStateConfigurationTestEventTriggerHandler.cpp
+- path: third_party/matter_sdk/src/app/clusters/boolean-state-configuration-server/CodegenIntegration.cpp
 include:
-  - path: third_party/matter_sdk/src/app/clusters/boolean-state-configuration-server
-    file_list:
-      - path: boolean-state-configuration-delegate.h
-      - path: boolean-state-configuration-server.h
-      - path: BooleanStateConfigurationCluster.h
-      - path: BooleanStateConfigurationTestEventTriggerHandler.h
-      - path: CodegenIntegration.h
+- path: third_party/matter_sdk/src/app/clusters/boolean-state-configuration-server
+  file_list:
+  - path: BooleanStateConfigurationCluster.h
+  - path: BooleanStateConfigurationTestEventTriggerHandler.h
+  - path: CodegenIntegration.h
+  - path: boolean-state-configuration-delegate.h
+  - path: boolean-state-configuration-server.h
 template_contribution:
-  - name: component_catalog
-    value: matter_boolean_state_configuration
+- name: component_catalog
+  value: matter_boolean_state_configuration

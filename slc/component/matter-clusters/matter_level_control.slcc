@@ -1,28 +1,30 @@
 category: Clusters|General
-description: >
-  Implementation of the Level Control Cluster.
-  The user has to enable the Level Control Cluster in the ZCL Advanced Platform (ZAP) tool in order to enable this functionality.
+description: 'Implementation of the Level Control Cluster. The user has to enable
+  the Level Control Cluster in the ZCL Advanced Platform (ZAP) tool in order to enable
+  this functionality.
+
+  '
 id: matter_level_control
 package: matter
 label: Level Control Cluster
 quality: production
 metadata:
   sbom:
-    license: "Apache 2.0"
-requires:
-  - name: matter_cluster_building_blocks
+    license: Apache 2.0
 provides:
-  - name: matter_level_control
+- name: matter_level_control
+requires:
+- name: matter_cluster_building_blocks
 source:
-  - path: third_party/matter_sdk/src/app/clusters/level-control/codegen/level-control.cpp
-  - path: third_party/matter_sdk/src/app/clusters/level-control/LevelControlCluster.cpp
+- path: third_party/matter_sdk/src/app/clusters/level-control/codegen/level-control.cpp
+- path: third_party/matter_sdk/src/app/clusters/level-control/LevelControlCluster.cpp
 include:
-  - path: third_party/matter_sdk/src/app/clusters/level-control
-    file_list:
-      - path: codegen/level-control.h
-      - path: level-control.h
-      - path: LevelControlCluster.h
-      - path: LevelControlDelegate.h
+- path: third_party/matter_sdk/src/app/clusters/level-control
+  file_list:
+  - path: LevelControlCluster.h
+  - path: LevelControlDelegate.h
+  - path: codegen/level-control.h
+  - path: level-control.h
 template_contribution:
-  - name: component_catalog
-    value: matter_level_control
+- name: component_catalog
+  value: matter_level_control

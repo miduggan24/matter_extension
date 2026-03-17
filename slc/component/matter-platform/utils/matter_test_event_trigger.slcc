@@ -1,30 +1,99 @@
 id: matter_test_event_trigger
 label: Matter Test Event Trigger
-description: Definition of the TestEventTriggerDelegate class. An application implementing the TestEventTrigger Command must enable this component and implement bool emberAfHandleEventTrigger(uint64_t).
+description: Definition of the TestEventTriggerDelegate class. An application implementing
+  the TestEventTrigger Command must enable this component and implement bool emberAfHandleEventTrigger(uint64_t).
 package: matter
 category: Stack
 quality: production
 metadata:
   sbom:
     license: Zlib
-
 provides:
-  - name: matter_test_event_trigger
-
+- name: matter_test_event_trigger
 source:
-  - path: third_party/matter_sdk/examples/platform/silabs/test-event-trigger/SilabsTestEventTriggerDelegate.cpp
-
+- path: third_party/matter_sdk/examples/platform/silabs/test-event-trigger/SilabsTestEventTriggerDelegate.cpp
 include:
-  - path: third_party/matter_sdk/examples/platform/silabs/test-event-trigger
-    file_list:
-      - path: SilabsTestEventTriggerDelegate.h
-  - path: third_party/matter_sdk/src/app
-    file_list:
-      - path: TestEventTriggerDelegate.h
-
+- path: third_party/matter_sdk/examples/platform/silabs/test-event-trigger
+  file_list:
+  - path: SilabsTestEventTriggerDelegate.h
+- path: third_party/matter_sdk/src/app
+  file_list:
+  - path: AppConfig.h
+  - path: AttributeAccessInterface.h
+  - path: AttributeAccessInterfaceCache.h
+  - path: AttributeAccessInterfaceRegistry.h
+  - path: AttributeAccessToken.h
+  - path: AttributeEncodeState.h
+  - path: AttributePathExpandIterator.h
+  - path: AttributePathParams.h
+  - path: AttributeReportBuilder.h
+  - path: AttributeValueDecoder.h
+  - path: AttributeValueEncoder.h
+  - path: BufferedReadCallback.h
+  - path: CASEClient.h
+  - path: CASEClientPool.h
+  - path: CASESessionManager.h
+  - path: ChunkedWriteCallback.h
+  - path: ClusterStateCache.h
+  - path: CommandHandler.h
+  - path: CommandHandlerExchangeInterface.h
+  - path: CommandHandlerImpl.h
+  - path: CommandHandlerInterface.h
+  - path: CommandHandlerInterfaceRegistry.h
+  - path: CommandHandlerInterfaceShim.h
+  - path: CommandPathParams.h
+  - path: CommandPathRegistry.h
+  - path: CommandResponseHelper.h
+  - path: CommandResponseSender.h
+  - path: CommandSender.h
+  - path: CommandSenderLegacyCallback.h
+  - path: ConcreteAttributePath.h
+  - path: ConcreteClusterPath.h
+  - path: ConcreteCommandPath.h
+  - path: ConcreteEventPath.h
+  - path: DataVersionFilter.h
+  - path: DefaultSafeAttributePersistenceProvider.h
+  - path: DeviceLoadStatusProvider.h
+  - path: DeviceProxy.h
+  - path: EventHeader.h
+  - path: EventLogging.h
+  - path: EventLoggingDelegate.h
+  - path: EventLoggingTypes.h
+  - path: EventManagement.h
+  - path: EventPathParams.h
+  - path: EventReporter.h
+  - path: FailSafeContext.h
+  - path: GenericEventManagementTestEventTriggerHandler.h
+  - path: GlobalAttributes.h
+  - path: InteractionModelDelegatePointers.h
+  - path: InteractionModelEngine.h
+  - path: InteractionModelHelper.h
+  - path: InteractionModelTimeout.h
+  - path: OTAUserConsentCommon.h
+  - path: OperationalSessionSetup.h
+  - path: OperationalSessionSetupPool.h
+  - path: PendingResponseTracker.h
+  - path: PendingResponseTrackerImpl.h
+  - path: ReadClient.h
+  - path: ReadHandler.h
+  - path: ReadPrepareParams.h
+  - path: RequiredPrivilege.h
+  - path: SafeAttributePersistenceProvider.h
+  - path: SimpleSubscriptionResumptionStorage.h
+  - path: SpecificationDefinedRevisions.h
+  - path: StatusResponse.h
+  - path: StorageDelegateWrapper.h
+  - path: SubscriptionResumptionSessionEstablisher.h
+  - path: SubscriptionResumptionStorage.h
+  - path: SubscriptionStats.h
+  - path: SubscriptionsInfoProvider.h
+  - path: TestEventTriggerDelegate.h
+  - path: TimedHandler.h
+  - path: TimedRequest.h
+  - path: WriteClient.h
+  - path: WriteHandler.h
 config_file:
-  - path: slc/config/sl_matter_test_event_trigger_config.h
-    file_id: matter_test_event_trigger_config
-
+- path: slc/config/sl_matter_test_event_trigger_config.h
+  file_id: matter_test_event_trigger_config
 define:
-  - name: SL_MATTER_TEST_EVENT_TRIGGER_ENABLED
+- name: SL_MATTER_TEST_EVENT_TRIGGER_ENABLED

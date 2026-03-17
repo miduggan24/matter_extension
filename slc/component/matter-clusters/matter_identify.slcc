@@ -1,29 +1,111 @@
 category: Clusters|General
-description: >
-  Implementation of the Identify Server Cluster.
-  The user has to enable the Identify Server Cluster in the ZCL Advanced Platform (ZAP) tool in order to enable this functionality.
+description: 'Implementation of the Identify Server Cluster. The user has to enable
+  the Identify Server Cluster in the ZCL Advanced Platform (ZAP) tool in order to
+  enable this functionality.
+
+  '
 id: matter_identify
 package: matter
 label: Identify Server Cluster
 quality: production
 metadata:
   sbom:
-    license: "Apache 2.0"
+    license: Apache 2.0
 provides:
-  - name: matter_identify
+- name: matter_identify
 source:
-  - path: third_party/matter_sdk/src/app/clusters/identify-server/CodegenIntegration.cpp
-  - path: third_party/matter_sdk/src/app/clusters/identify-server/IdentifyCluster.cpp
+- path: third_party/matter_sdk/src/app/clusters/identify-server/CodegenIntegration.cpp
+- path: third_party/matter_sdk/src/app/clusters/identify-server/IdentifyCluster.cpp
 include:
-  - path: third_party/matter_sdk/src/app/clusters/identify-server
-    file_list:
-      - path: CodegenIntegration.h
-      - path: identify-server.h
-      - path: IdentifyCluster.h
-      - path: IdentifyIntegrationDelegate.h
-  - path: third_party/matter_sdk/src/lib/support
-    file_list:
-      - path: TimerDelegate.h
+- path: third_party/matter_sdk/src/lib/support
+  file_list:
+  - path: AutoRelease.h
+  - path: Base64.h
+  - path: BitFlags.h
+  - path: BitMask.h
+  - path: BufferReader.h
+  - path: BufferWriter.h
+  - path: BytesCircularBuffer.h
+  - path: BytesToHex.h
+  - path: CHIPArgParser.hpp
+  - path: CHIPCounter.h
+  - path: CHIPFaultInjection.h
+  - path: CHIPJNIError.h
+  - path: CHIPMem.h
+  - path: CHIPMemString.h
+  - path: CHIPPlatformMemory.h
+  - path: CodeUtils.h
+  - path: CommonIterator.h
+  - path: CommonPersistentData.h
+  - path: CompileTimeString.h
+  - path: Compiler.h
+  - path: DLLUtil.h
+  - path: DefaultStorageKeyAllocator.h
+  - path: Defer.h
+  - path: EnforceFormat.h
+  - path: FibonacciUtils.h
+  - path: FileDescriptor.h
+  - path: FixedBuffer.h
+  - path: FixedBufferAllocator.h
+  - path: Fold.h
+  - path: FunctionTraits.h
+  - path: IniEscaping.h
+  - path: IntrusiveList.h
+  - path: Iterators.h
+  - path: JniReferences.h
+  - path: JniTypeWrappers.h
+  - path: LambdaBridge.h
+  - path: LifetimePersistedCounter.h
+  - path: LinkedList.h
+  - path: ObjectDump.h
+  - path: ObjectLifeCycle.h
+  - path: PersistedCounter.h
+  - path: PersistentData.h
+  - path: PersistentStorageAudit.h
+  - path: PersistentStorageMacros.h
+  - path: Pool.h
+  - path: PoolWrapper.h
+  - path: PrivateHeap.h
+  - path: ReadOnlyBuffer.h
+  - path: ReferenceCountedHandle.h
+  - path: ReferenceCountedPtr.h
+  - path: SafeInt.h
+  - path: SafePointerCast.h
+  - path: SafeString.h
+  - path: Scoped.h
+  - path: ScopedMemoryBuffer.h
+  - path: SetupDiscriminator.h
+  - path: SortUtils.h
+  - path: Span.h
+  - path: SpanSearchValue.h
+  - path: SplitLambda.h
+  - path: StateMachine.h
+  - path: StringBuilder.h
+  - path: StringSplitter.h
+  - path: TemporaryFileStream.h
+  - path: TestGroupData.h
+  - path: TestPersistentStorageDelegate.h
+  - path: ThreadDiscoveryCode.h
+  - path: ThreadOperationalDataset.h
+  - path: TimeUtils.h
+  - path: TimerDelegate.h
+  - path: TimerDelegateMock.h
+  - path: TypeTraits.h
+  - path: UnitTest.h
+  - path: UnitTestUtils.h
+  - path: Variant.h
+  - path: VerificationMacrosNoLogging.h
+  - path: ZclString.h
+  - path: attribute-storage-null-handling.h
+  - path: odd-sized-integers.h
+  - path: static_support_smart_ptr.h
+  - path: utf8.h
+- path: third_party/matter_sdk/src/app/clusters/identify-server
+  file_list:
+  - path: CodegenIntegration.h
+  - path: IdentifyCluster.h
+  - path: IdentifyIntegrationDelegate.h
+  - path: identify-server.h
 template_contribution:
-  - name: component_catalog
-    value: matter_identify
+- name: component_catalog
+  value: matter_identify

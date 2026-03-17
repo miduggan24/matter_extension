@@ -1,22 +1,96 @@
 id: matter_subscription_persistence
 label: Subscription Persistence
-description: >
-  Allows an end device to re-establish its subscription and by extension its
-  secure session to a subscriber in the event of a power cycle.
+description: 'Allows an end device to re-establish its subscription and by extension
+  its secure session to a subscriber in the event of a power cycle.
+
+  '
 package: matter
 category: Platform|Low-power
 provides:
-  - name: matter_subscription_persistence
+- name: matter_subscription_persistence
 quality: production
 metadata:
   sbom:
     license: Zlib
 define:
-  - name: CHIP_CONFIG_PERSIST_SUBSCRIPTIONS
-    value: 1
+- name: CHIP_CONFIG_PERSIST_SUBSCRIPTIONS
+  value: 1
 include:
-  - path: third_party/matter_sdk/src/app
-    file_list:
-      - path: SimpleSubscriptionResumptionStorage.h
+- path: third_party/matter_sdk/src/app
+  file_list:
+  - path: AppConfig.h
+  - path: AttributeAccessInterface.h
+  - path: AttributeAccessInterfaceCache.h
+  - path: AttributeAccessInterfaceRegistry.h
+  - path: AttributeAccessToken.h
+  - path: AttributeEncodeState.h
+  - path: AttributePathExpandIterator.h
+  - path: AttributePathParams.h
+  - path: AttributeReportBuilder.h
+  - path: AttributeValueDecoder.h
+  - path: AttributeValueEncoder.h
+  - path: BufferedReadCallback.h
+  - path: CASEClient.h
+  - path: CASEClientPool.h
+  - path: CASESessionManager.h
+  - path: ChunkedWriteCallback.h
+  - path: ClusterStateCache.h
+  - path: CommandHandler.h
+  - path: CommandHandlerExchangeInterface.h
+  - path: CommandHandlerImpl.h
+  - path: CommandHandlerInterface.h
+  - path: CommandHandlerInterfaceRegistry.h
+  - path: CommandHandlerInterfaceShim.h
+  - path: CommandPathParams.h
+  - path: CommandPathRegistry.h
+  - path: CommandResponseHelper.h
+  - path: CommandResponseSender.h
+  - path: CommandSender.h
+  - path: CommandSenderLegacyCallback.h
+  - path: ConcreteAttributePath.h
+  - path: ConcreteClusterPath.h
+  - path: ConcreteCommandPath.h
+  - path: ConcreteEventPath.h
+  - path: DataVersionFilter.h
+  - path: DefaultSafeAttributePersistenceProvider.h
+  - path: DeviceLoadStatusProvider.h
+  - path: DeviceProxy.h
+  - path: EventHeader.h
+  - path: EventLogging.h
+  - path: EventLoggingDelegate.h
+  - path: EventLoggingTypes.h
+  - path: EventManagement.h
+  - path: EventPathParams.h
+  - path: EventReporter.h
+  - path: FailSafeContext.h
+  - path: GenericEventManagementTestEventTriggerHandler.h
+  - path: GlobalAttributes.h
+  - path: InteractionModelDelegatePointers.h
+  - path: InteractionModelEngine.h
+  - path: InteractionModelHelper.h
+  - path: InteractionModelTimeout.h
+  - path: OTAUserConsentCommon.h
+  - path: OperationalSessionSetup.h
+  - path: OperationalSessionSetupPool.h
+  - path: PendingResponseTracker.h
+  - path: PendingResponseTrackerImpl.h
+  - path: ReadClient.h
+  - path: ReadHandler.h
+  - path: ReadPrepareParams.h
+  - path: RequiredPrivilege.h
+  - path: SafeAttributePersistenceProvider.h
+  - path: SimpleSubscriptionResumptionStorage.h
+  - path: SpecificationDefinedRevisions.h
+  - path: StatusResponse.h
+  - path: StorageDelegateWrapper.h
+  - path: SubscriptionResumptionSessionEstablisher.h
+  - path: SubscriptionResumptionStorage.h
+  - path: SubscriptionStats.h
+  - path: SubscriptionsInfoProvider.h
+  - path: TestEventTriggerDelegate.h
+  - path: TimedHandler.h
+  - path: TimedRequest.h
+  - path: WriteClient.h
+  - path: WriteHandler.h
 source:
-  - path: third_party/matter_sdk/src/app/SimpleSubscriptionResumptionStorage.cpp
+- path: third_party/matter_sdk/src/app/SimpleSubscriptionResumptionStorage.cpp

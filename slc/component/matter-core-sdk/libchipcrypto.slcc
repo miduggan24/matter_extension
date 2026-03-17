@@ -1,62 +1,71 @@
 category: Matter|Core
 define:
-  - name: CHIP_HAVE_CONFIG_H
-    value: "1"
-  - name: RADIO_CONFIG_DMP_SUPPORT
-    value: "1"
-  - name: CHIP_CRYPTO_KEYSTORE_RAW
-    value: "1"
-    condition: [matter_crypto_tinycrypt_siwx917]
-  - name: CHIP_CRYPTO_KEYSTORE_PSA
-    value: "1"
-    unless: [matter_crypto_tinycrypt_siwx917]
-description: Provides the Matter cryptography framework for key management, secure storage, and cryptographic operations.
+- name: CHIP_HAVE_CONFIG_H
+  value: '1'
+- name: RADIO_CONFIG_DMP_SUPPORT
+  value: '1'
+- name: CHIP_CRYPTO_KEYSTORE_RAW
+  value: '1'
+  condition:
+  - matter_crypto_tinycrypt_siwx917
+- name: CHIP_CRYPTO_KEYSTORE_PSA
+  value: '1'
+  unless:
+  - matter_crypto_tinycrypt_siwx917
+description: Provides the Matter cryptography framework for key management, secure
+  storage, and cryptographic operations.
 id: libchipcrypto
 include:
-  - path: third_party/matter_sdk/examples/platform/silabs
-  - path: third_party/matter_sdk/src
-  - path: third_party/matter_sdk/src/include
-  - path: third_party/matter_sdk/src/lib
-  - path: third_party/nlassert/include
-  - path: third_party/nlio/include
-  - path: third_party/matter_sdk/src/crypto
-    file_list:
-    -   path: OperationalKeystore.h
-    -   path: RawKeySessionKeystore.h
-    -   path: CHIPCryptoPAL.h
-    -   path: RandUtils.h
-    -   path: CHIPCryptoPALmbedTLS.h
-    -   path: SessionKeystore.h
-    -   path: PSAOperationalKeystore.h
-    -   path: DefaultSessionKeystore.h
-    -   path: CHIPCryptoPALPSA.h
-    -   path: PersistentStorageOperationalKeystore.h
-    -   path: PSASessionKeystore.h
-    -   path: PSAKeyAllocator.h
+- path: third_party/matter_sdk/examples/platform/silabs
+- path: third_party/matter_sdk/src
+- path: third_party/matter_sdk/src/include
+- path: third_party/matter_sdk/src/lib
+- path: third_party/nlassert/include
+- path: third_party/nlio/include
+- path: third_party/matter_sdk/src/crypto
+  file_list:
+  - path: CHIPCryptoPAL.h
+  - path: CHIPCryptoPALOpenSSL.h
+  - path: CHIPCryptoPALPSA.h
+  - path: CHIPCryptoPALmbedTLS.h
+  - path: DefaultSessionKeystore.h
+  - path: EleManagerImpl.h
+  - path: OperationalKeystore.h
+  - path: PSAKeyAllocator.h
+  - path: PSAOperationalKeystore.h
+  - path: PSASessionKeystore.h
+  - path: PSASpake2p.h
+  - path: PersistentStorageOperationalKeystore.h
+  - path: RandUtils.h
+  - path: RawKeySessionKeystore.h
+  - path: SessionKeystore.h
 label: libchipcrypto
 package: matter
 provides:
-  - name: matter_libchipcrypto
+- name: matter_libchipcrypto
 quality: production
 metadata:
   sbom:
-    license: "Apache 2.0"
+    license: Apache 2.0
 source:
-  - path: third_party/matter_sdk/src/crypto/CHIPCryptoPAL.cpp
-  - path: third_party/matter_sdk/src/crypto/PersistentStorageOperationalKeystore.cpp
-  - path: third_party/matter_sdk/src/crypto/RandUtils.cpp
-  - path: third_party/matter_sdk/src/crypto/RawKeySessionKeystore.cpp
-    condition: [matter_crypto_tinycrypt_siwx917]
-  - path: third_party/matter_sdk/src/crypto/PSAOperationalKeystore.cpp
-    unless: [matter_crypto_tinycrypt_siwx917]
-  - path: third_party/matter_sdk/src/crypto/PSASessionKeystore.cpp
-    unless: [matter_crypto_tinycrypt_siwx917]
+- path: third_party/matter_sdk/src/crypto/CHIPCryptoPAL.cpp
+- path: third_party/matter_sdk/src/crypto/PersistentStorageOperationalKeystore.cpp
+- path: third_party/matter_sdk/src/crypto/RandUtils.cpp
+- path: third_party/matter_sdk/src/crypto/RawKeySessionKeystore.cpp
+  condition:
+  - matter_crypto_tinycrypt_siwx917
+- path: third_party/matter_sdk/src/crypto/PSAOperationalKeystore.cpp
+  unless:
+  - matter_crypto_tinycrypt_siwx917
+- path: third_party/matter_sdk/src/crypto/PSASessionKeystore.cpp
+  unless:
+  - matter_crypto_tinycrypt_siwx917
 template_contribution:
-  - name: psa_key_slots
-    value:
-      name: psa_key_slots_matter
-      count: 22
-    condition:
-      - psa_crypto
+- name: psa_key_slots
+  value:
+    name: psa_key_slots_matter
+    count: 22
+  condition:
+  - psa_crypto
 ui_hints:
   visibility: never
