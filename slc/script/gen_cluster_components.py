@@ -212,9 +212,12 @@ for clustercomponentname in sorted(cluster_data.keys()):
         requires_data = content.get('requires', []) or []
         config_file_data = content.get('config_file', []) or []
 
-        #merge with extracted source and include data and remove duplicates
+        # Paths under the cluster dir are replaced by discovered sources so renames/removals in SDK are reflected.
+        cluster_include = cluster_data[clustercomponentname]["include"]
         for path in current_source_data:
-            source_data.append(path["path"])
+            p = path["path"]
+            if not (p == cluster_include or p.startswith(cluster_include + "/")):
+                source_data.append(p)
         if len(current_include_data)>1:
             include = {}
             for i in range(len(current_include_data)):
