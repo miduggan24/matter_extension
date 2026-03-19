@@ -238,6 +238,9 @@ for clustercomponentname in sorted(cluster_data.keys()):
         print("EXCEPTION for component ", e , component_location)
 
     source_data = list(set(source_data + cluster_data[clustercomponentname]["sources"]))
+
+    source_data = [p for p in source_data if os.path.isfile(p)]
+
     if len(cluster_data[clustercomponentname]["headers"]) > 0:
         include = {"path": cluster_data[clustercomponentname]["include"], "file_list": cluster_data[clustercomponentname]["headers"]}
         includes.append(include)
