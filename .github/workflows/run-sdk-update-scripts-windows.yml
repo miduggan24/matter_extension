@@ -1,0 +1,30 @@
+name: Run SDK update scripts (Windows)
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  run-sdk-update-scripts:
+    runs-on: windows-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - name: Init matter_sdk submodule
+        run: git submodule update --init third_party/matter_sdk
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: "3.x"
+
+      - name: Install Python dependencies
+        run: pip install pyyaml
+
+      - name: Run SDK update scripts
+        run: python slc/script/run_sdk_update_scripts.py
