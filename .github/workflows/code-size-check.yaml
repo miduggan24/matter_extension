@@ -22,11 +22,11 @@ on:
       project-type: 
         required: false
         type: choice
-        description: "Project type (e.g. soc, ncp)"
+        description: "soc or 917 ncp segment in the slcp name"
         default: soc
         options:
           - soc
-          - ncp
+          - 917_ncp
       baseline:
         required: false
         type: string
