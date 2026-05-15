@@ -4,14 +4,43 @@ permissions:
   pull-requests: read
 
 on:
+  workflow_dispatch:
+    inputs:
+      example-app: 
+        required: false
+        type: string
+        description: "App name as it appears in the slc/apps directory path (e.g. multi_sensor_app)"
+        default: "multi_sensor_app"
+      transport:
+        required: false
+        type: choice
+        description: "Transport type (e.g. thread, wifi)"
+        default: thread
+        options:
+          - thread
+          - wifi
+      project-type: 
+        required: false
+        type: choice
+        description: "Project type (e.g. soc, ncp)"
+        default: soc
+        options:
+          - soc
+          - ncp
   pull_request:
     types: [opened, synchronize, reopened]
     branches:
       - main
       - "release_*"
+
 concurrency:
     group: code-size-check-${{ github.ref }}
     cancel-in-progress: true
+
+env:
+  EXAMPLE_APP: ${{ inputs.example-app || 'multi_sensor_app'}}
+  TRANSPORT: ${{ inputs.transport || 'thread'}}
+  PROJECT_TYPE: ${{ inputs.project-type || 'soc'}}
 
 jobs:
     code-size-check:
@@ -35,7 +64,7 @@ jobs:
               uses: SiliconLabsSoftware/matter_build_action@v2
               with:
                   json-file-path: ".github/silabs-code-size.json"
-                  path-to-example-app: "./slc/apps/multi_sensor_app/thread/matter_thread_soc_multi_sensor_app_freertos.slcp"
+                  path-to-example-app: "./slc/apps/${{ env.EXAMPLE_APP }}/${{ env.TRANSPORT }}/matter_${{env.TRANSPORT}}_${{ env.TRANSPORT_TYPE }}_${{ env.EXAMPLE_APP }}_freertos.slcp"
                   example-app: code-canary
                   build-script: "./slc/build.sh"
                   output-directory: " "
@@ -48,13 +77,14 @@ jobs:
               uses: SiliconLabsSoftware/matter_build_action@v2
               with:
                   json-file-path: ".github/silabs-code-size.json"
-                  path-to-example-app: "./baseline/slc/apps/multi_sensor_app/thread/matter_thread_soc_multi_sensor_app_freertos.slcp"
+                  path-to-example-app: "./baseline/slc/apps/${{ env.EXAMPLE_APP }}/${{ env.TRANSPORT }}/matter_${{env.TRANSPORT}}_${{ env.TRANSPORT_TYPE }}_${{ env.EXAMPLE_APP }}_freertos.slcp"
                   example-app: code-canary
                   build-script: "./baseline/slc/build.sh"
                   output-directory: " "
                   build-type: "standard"
               env:
                 MATTER_ROOT: ${{ github.workspace }}/baseline
+
             - name: Generate Code Size Results and Compare
               shell: bash
               run: |
