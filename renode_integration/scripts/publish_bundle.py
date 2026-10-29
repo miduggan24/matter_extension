@@ -9,7 +9,7 @@ import tarfile
 
 import common
 
-SOURCE_ANNOTATION = "https://github.com/SiliconLabsSoftware/matter_extension"
+SOURCE_ANNOTATION = "https://github.com/miduggan24/matter_extension"
 
 
 def bundle_contents(bundle, kind):
