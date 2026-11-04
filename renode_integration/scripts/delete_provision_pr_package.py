@@ -17,7 +17,7 @@ def main():
     tag = common.resolve_provision_tag(pr_num=str(pr))
     package_ref = common.manifest_lookup("ghcr.package")
     org, package = package_ref.removeprefix("ghcr.io/").split("/", 1)
-    versions = f"/orgs/{org}/packages/container/{package}/versions"
+    versions = f"/{os.environ.get('GHCR_OWNER_NS', 'orgs')}/{org}/packages/container/{package}/versions"
 
     print(f"Looking for {package_ref}:{tag}")
     listed = subprocess.run(
