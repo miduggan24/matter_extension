@@ -29,7 +29,7 @@ def bundle_dir():
 
 
 RENODE_SRC_DIR = os.path.join(RENODE_INTEGRATION_DIR, "renode-src")
-ACTIVE_BRANCHES = {"main", "release_2.10-1.6.1"}
+ACTIVE_BRANCHES = {"main", "release_2.10-1.6.1", "provisioning_disk"}
 
 
 def resolve_provision_tag(is_publish: bool = False, pr_num: str = None) -> str:
