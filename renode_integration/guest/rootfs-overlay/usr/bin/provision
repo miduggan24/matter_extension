@@ -19,6 +19,7 @@ fi
 
 mkdir -p /tmp/provision
 cd /tmp/provision
+export PATH="$PROVISION_ROOT/guest-bin:$PATH"
 export PYTHONHOME="$PROVISION_ROOT"
 export PYTHONNOUSERSITE=1
 export PYTHONPATH="$PROVISION_ROOT/opt/provision/site-packages${PYTHONPATH:+:$PYTHONPATH}"

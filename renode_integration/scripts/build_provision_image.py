@@ -3,9 +3,10 @@
 @file build_provision_image.py
 @brief Build matter-provision.ext2 from third_party/matter_support/provision.
 
-The image contains provision.py, requirements.txt wheels, and an arm64 Python
-runtime so matter_support updates stay self-contained. matter-tools.ext2 is
-unchanged. Build on Linux aarch64 (same as matter-tools.ext2).
+The image contains provision.py, requirements.txt wheels, an arm64 Python runtime,
+and openssl (for PKCS#12 / cert conversion) so matter_support updates stay
+self-contained. matter-tools.ext2 is unchanged. Build on Linux aarch64 (same as
+matter-tools.ext2).
 """
 
 import os
@@ -18,6 +19,8 @@ from pathlib import Path
 import common
 
 _IGNORE = shutil.ignore_patterns("__pycache__", "*.pyc", "test", "temp", "latest.json")
+
+GUEST_BINS = ("openssl",)
 
 
 def stage_python_runtime(staging):
@@ -39,6 +42,8 @@ def stage_python_runtime(staging):
 
     python = Path(common.first_file("/usr/bin/python3.12", "/usr/bin/python3"))
     common.install_file(python, guest_bin / "python3", 0o755)
+    for name in GUEST_BINS:
+        common.install_file(shutil.which(name), guest_bin / name, 0o755)
     stdlib = Path("/usr/lib/python3.12")
     if not stdlib.is_dir():
         common.die(f"python stdlib not found at {stdlib}")
