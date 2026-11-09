@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
-"""Build matter-provision.ext2 from third_party/matter_support/provision.
+"""
+@file build_provision_image.py
+@brief Build matter-provision.ext2 from third_party/matter_support/provision.
 
 The image contains provision.py, requirements.txt wheels, and an arm64 Python
 runtime so matter_support updates stay self-contained. matter-tools.ext2 is

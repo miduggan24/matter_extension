@@ -1,7 +1,9 @@
 #!/usr/bin/env python3
 """
-Writes NVM3 key 0x87228 = 1 (provision-required), matching the ``nvm3 set
---object 0x87228:01`` step from Matter self-provisioning docs.
+@file make_provision_nvm3.py
+@brief Write NVM3 key 0x87228 = 1 (provision-required) for Matter self-provisioning.
+
+Matches the ``nvm3 set --object 0x87228:01`` step from Matter self-provisioning docs.
 """
 
 import argparse
@@ -27,7 +29,7 @@ def nvm3_region(map_path):
 
 
 def main():
-    parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
+    parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--map", required=True, type=Path, help="linker map of the Matter app")
     parser.add_argument(
         "--device",

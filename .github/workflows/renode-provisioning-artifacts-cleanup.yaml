@@ -31,4 +31,4 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GITHUB_PR_NUMBER: ${{ github.event.pull_request.number || inputs.pr_number }}
-        run: python3 renode_integration/scripts/delete_provision_pr_package.py
+        run: ./renode_integration/scripts/delete_provision_pr_package.py

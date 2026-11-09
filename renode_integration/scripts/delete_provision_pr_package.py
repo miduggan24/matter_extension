@@ -1,5 +1,8 @@
 #!/usr/bin/env python3
-"""Delete the GHCR provision bundle version tagged for a closed pull request."""
+"""
+@file delete_provision_pr_package.py
+@brief Delete the GHCR provision bundle version tagged for a closed pull request.
+"""
 
 import os
 import subprocess
