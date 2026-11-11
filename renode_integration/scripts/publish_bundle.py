@@ -4,8 +4,8 @@
 @brief Package a common or runtime bundle and push it to GHCR with ORAS.
 
 Usage:
-  publish_bundle.py --bundle common|runtime
-  publish_bundle.py --bundle common|runtime --action prepare|push
+  publish_bundle.py --bundle common|runtime|provision
+  publish_bundle.py --bundle common|runtime|provision --action prepare|push
 """
 
 import argparse
@@ -90,12 +90,12 @@ def push(kind):
 
 def parse_args():
     parser = argparse.ArgumentParser(
-        description="Package a common or runtime bundle and push it to GHCR with ORAS.",
+        description="Package a common, runtime, or provision bundle and push it to GHCR with ORAS.",
     )
     parser.add_argument(
         "--bundle",
         required=True,
-        choices=("common", "runtime"),
+        choices=("common", "runtime", "provision"),
         help="bundle to package and publish",
     )
     parser.add_argument(

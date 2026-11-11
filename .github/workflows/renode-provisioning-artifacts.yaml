@@ -99,4 +99,4 @@ jobs:
       - name: Publish provisioning bundle to GHCR
         run: |
           echo "${{ secrets.GITHUB_TOKEN }}" | oras login ghcr.io -u "${{ github.actor }}" --password-stdin
-          python3 renode_integration/scripts/publish_bundle.py provision
+          python3 renode_integration/scripts/publish_bundle.py --bundle provision
