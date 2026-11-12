@@ -1,15 +1,13 @@
 name: Renode Demo Tests
 
 on:
-  workflow_call:
-    inputs:
-      build-type:
-        description: Calling workflow build type
-        required: true
-        type: string
   workflow_run:
-    workflows: ["Packages Validation"]
-    branches: ["release_2.10-1.6.1"]
+    workflows:
+      - "Build Dev apps"
+      - "Packages Validation"
+    branches:
+      - main
+      - "release_*"
     types: [completed]
 
 permissions:
@@ -17,12 +15,13 @@ permissions:
   actions: read
   packages: read
 
+env:
+  BUILD_TYPE: full
+
 jobs:
   set-matrix:
     name: Select demo apps
-    if: >-
-      inputs.build-type == 'full' ||
-      (github.event_name == 'workflow_run' && github.event.workflow_run.conclusion == 'success')
+    if: github.event.workflow_run.conclusion == 'success'
     runs-on: ubuntu-latest
     outputs:
       include: ${{ steps.matrix.outputs.include }}
@@ -30,6 +29,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v7
         with:
+          ref: ${{ github.event.workflow_run.head_sha }}
           submodules: false
 
       - name: Install flow parser
@@ -42,12 +42,9 @@ jobs:
   renode-demo:
     name: ${{ matrix.example-app }} ${{ matrix.board }}
     needs: set-matrix
-    if: >-
-      inputs.build-type == 'full' ||
-      (github.event_name == 'workflow_run' && github.event.workflow_run.conclusion == 'success')
     runs-on: ubuntu-latest
     timeout-minutes: 90
-    continue-on-error: ${{ inputs.build-type == 'full' }}
+    continue-on-error: true
     strategy:
       fail-fast: false
       matrix:
@@ -56,13 +53,14 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v7
         with:
+          ref: ${{ github.event.workflow_run.head_sha }}
           submodules: false
 
       - name: Download demo ELFs
         uses: actions/download-artifact@v7
         with:
-          name: renode-demo-${{ inputs.build-type || 'full' }}-${{ matrix.example-app }}-${{ matrix.platform }}
-          run-id: ${{ github.event.workflow_run.id || github.run_id }}
+          name: renode-demo-${{ env.BUILD_TYPE }}-${{ matrix.example-app }}-${{ matrix.platform }}
+          run-id: ${{ github.event.workflow_run.id }}
           github-token: ${{ secrets.GITHUB_TOKEN }}
           path: matter-elf
 
@@ -70,8 +68,8 @@ jobs:
         if: matrix.extra-app != ''
         uses: actions/download-artifact@v7
         with:
-          name: renode-demo-${{ inputs.build-type || 'full' }}-${{ matrix.extra-app }}-${{ matrix.platform }}
-          run-id: ${{ github.event.workflow_run.id || github.run_id }}
+          name: renode-demo-${{ env.BUILD_TYPE }}-${{ matrix.extra-app }}-${{ matrix.platform }}
+          run-id: ${{ github.event.workflow_run.id }}
           github-token: ${{ secrets.GITHUB_TOKEN }}
           path: matter-elf-extra
 

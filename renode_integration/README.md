@@ -99,11 +99,11 @@ hub> chip-tool onoff off 101 1
 hub> exit
 ```
 
-Use `exit`, `quit`, Ctrl-D, or Ctrl-C to close the session and simulation. A failed command is reported and returns you to the prompt. State is retained during the session; a new invocation starts a fresh simulation and commissions again. Interactive mode is for non-interactive hub shell commands such as `chip-tool`, not programs that require their own input prompt.
+Use `exit`, `quit`, Ctrl-D, or Ctrl-C to close the session and simulation. A failed command is reported and returns you to the prompt. State is retained during the session, a new invocation starts a fresh simulation and commissions again. Interactive mode is for non-interactive hub shell commands such as `chip-tool`, not programs that require their own input prompt.
 
-You can also supply `--app` in interactive mode to select its device setup. For `--app light_switch_app`, provide `--extra-elf` with the lighting ELF; the light is node **102** and the switch is node **101**. Without `--interactive`, `--app` runs its predefined demo flow and exits, as CI does. Edit `demo_flows.yaml` for per-app CI steps.
+You can also supply `--app` in interactive mode to select its device setup. For `--app light_switch_app`, provide `--extra-elf` with the lighting ELF. The light is node **102** and the switch is node **101**. Without `--interactive`, `--app` runs its predefined demo flow and exits, as CI does. Edit `demo_flows.yaml` for per-app CI steps.
 
-Nightly and PR runs: [`.github/workflows/renode-demo-tests.yaml`](../.github/workflows/renode-demo-tests.yaml). To form a new Thread network from the hub console, run `matter-thread-init --force` (e.g. via `nc` during a long-running session).
+CI: [`.github/workflows/renode-demo-tests.yaml`](../.github/workflows/renode-demo-tests.yaml) runs via `workflow_run` after a successful **Build Dev apps** or **Packages Validation** on `main` / `release_*`, using `renode-demo-full-*` artifacts from that workflow run. To form a new Thread network from the hub console, run `matter-thread-init --force` (e.g. via `nc` during a long-running session).
 
 Cold boot (no checkpoint) remains `resc/matter-sim-full.resc` for maintainers regenerating the bundle checkpoint.
 
@@ -192,10 +192,9 @@ Workflow [`.github/workflows/renode-demo-tests.yaml`](../.github/workflows/renod
 
 | Trigger | Scope |
 |---------|--------|
-| Reusable call from [dev-apps-builder](../.github/workflows/dev-apps-builder.yaml) | Full builds only; all 13 demo apps after their builds finish (non-blocking while in pilot) |
-| `workflow_run` after **Packages Validation** | Successful full builds on `release_2.10-1.6.1` only; all 13 Matter-over-Thread demo apps × boards in `harness/demo_config.py` |
+| `workflow_run` after **Build Dev apps** or **Packages Validation** | Parent workflow succeeded on `main` or `release_*`. All Matter-over-Thread demo apps × boards in `harness/demo_config.py` |
 
-Jobs run in parallel (`fail-fast: false`), one per app and board: 13 apps × nine boards (117 jobs). Both entry paths require full builds. The reusable call passes the required `build-type` input; app selection always includes all demos. The boards are `brd4187c`, `brd4116a`, `brd4407a`, `brd4186c`, `brd4117a`, `brd4118a`, `brd4120a`, `brd4121a`, and `brd1019a`. Each job loads `platforms/boards/silabs/<board>.repl`. ELFs come from `renode-demo-<build-type>-<app>-<platform>` artifacts (tree paths under `out/<board>/…`; downloaded with `actions/download-artifact` and located by board in the workflow). Hub and SoC UART output is streamed to the job log via Renode `test_lib`.
+Jobs run in parallel (`fail-fast: false`), one per app and board: 13 apps × nine boards (117 jobs). Demos expect `renode-demo-full-*` artifacts from the triggering run. The boards are `brd4187c`, `brd4116a`, `brd4407a`, `brd4186c`, `brd4117a`, `brd4118a`, `brd4120a`, `brd4121a`, and `brd1019a`. Each job loads `platforms/boards/silabs/<board>.repl`. ELFs come from `renode-demo-<build-type>-<app>-<platform>` artifacts (tree paths under `out/<board>/…`, downloaded with `actions/download-artifact` and located by board in the workflow). Hub and SoC UART output is streamed to the job log via Renode `test_lib`.
 
 ### CI provisioning test
 Will be implemented in future PRs.
