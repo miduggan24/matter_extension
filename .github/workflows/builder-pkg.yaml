@@ -127,9 +127,7 @@ jobs:
               uses: actions/upload-artifact@v7
               with:
                   name: renode-demo-${{ inputs.build-type }}-${{ inputs.example-app }}-${{ inputs.platform }}
-                  path: |
-                      out/**/matter_thread_soc_*.out
-                      !out/**/*copy-sources*/**
+                  path: out/*/*_freertos_solution/**/matter_thread_soc_${{ inputs.example-app }}_freertos.out
                   if-no-files-found: error
                   overwrite: true
 
