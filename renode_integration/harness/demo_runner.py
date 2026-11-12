@@ -203,18 +203,22 @@ def run_demo(
         if dual:
             _grant_switch_acl_on_light(hub, light_node, switch_node)
 
-        onoff_before = None
         steps = flow["steps"] if flow and not interactive else []
-        for step in steps:
-            if dual and step.get("command") == "switch onoff toggle":
-                baseline_cmd = f"chip-tool onoff read on-off {light_node} 1"
-                read_rc, read_out = run_shell(hub, baseline_cmd, STEP_TIMEOUT_S)
-                if read_rc != 0:
-                    raise RuntimeError(f"on-off baseline read failed\n{read_out[-2000:]}")
-                onoff_before = _onoff_value_from_report(read_out)
-                if onoff_before is None:
-                    raise RuntimeError(f"could not parse on-off baseline\n{read_out[-2000:]}")
-            onoff_before = _run_step(step, hub, soc if dual else None, None, onoff_before)
+        if dual:
+            onoff_before = None
+            for step in steps:
+                if step.get("command") == "switch onoff toggle":
+                    baseline_cmd = f"chip-tool onoff read on-off {light_node} 1"
+                    read_rc, read_out = run_shell(hub, baseline_cmd, STEP_TIMEOUT_S)
+                    if read_rc != 0:
+                        raise RuntimeError(f"on-off baseline read failed\n{read_out[-2000:]}")
+                    onoff_before = _onoff_value_from_report(read_out)
+                    if onoff_before is None:
+                        raise RuntimeError(f"could not parse on-off baseline\n{read_out[-2000:]}")
+                onoff_before = _run_step(step, hub, soc, None, onoff_before)
+        else:
+            for step in steps:
+                _run_step(step, hub, None, None, None)
 
         if interactive:
             _interactive_hub(hub)
