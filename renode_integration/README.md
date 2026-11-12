@@ -22,7 +22,7 @@ The simulation models:
 | `guest/dts/` | ZynqMP device tree source |
 | `guest/rootfs-overlay/` | Matter-specific files injected into the boot rootfs |
 | `scripts/` | Python scripts that build, assemble, fetch, and publish the bundle |
-| `harness/` | pyrenode3 harness (`MatterSim`), commissioning smoke test, checkpoint generation |
+| `harness/` | pyrenode3 harness (`MatterSim`, `demo_runner`), checkpoint generation |
 | `out/bundle/` | Assembled artifact tree (gitignored) |
 
 ## Common vs runtime artifacts
@@ -62,62 +62,50 @@ gh auth login
 python3 scripts/fetch_bundle.py
 ```
 
-The lighting ELF must match the SoC platform loaded in `resc/matter-sim.resc` (default `brd4187c`). For another board, change
-the `LoadPlatformDescription` line in that resc file locally and use the matching app binary.
-Only **MG24**, **MG26**, and **SixG301** have been tested in this simulation so far.
+Use an ELF built for the SoC board you pass to `--board` (default `brd4187c`). **MG24**, **MG26**, and **SixG301** have been exercised in this simulation.
 
-### Manual test with Renode CLI (resc)
+### Demo test (local and CI)
 
-Copy your app binary into the bundle as `matter.out`, then start Renode:
+`harness/demo_test.py` is the single entry point: it loads `linux-booted-thread.save` via pyrenode3, attaches the Matter SoC for `--board`, commissions node **101**, then runs README steps from `harness/demo_flows.yaml` (same path CI uses).
 
-```sh
-cp /path/to/matter/app/binaries/<app>.out out/bundle/matter.out
-cd out/bundle
-./renode/renode -e '$matter_elf=@'"$(pwd)"'/matter.out' resc/matter-sim.resc
-```
-
-Connect to the hub console and the Matter app CLI.
-
-```sh
-# Matter Hub
-nc localhost 4540
-
-# Matter SoC
-nc localhost 3452
-```
-
-`matter-sim.resc` starts from a checkpoint with booted Linux machine and pre-initialized
-Thread network. On the simulated Matter Hub you can commission with:
-
-```sh
-chip-tool pairing ble-thread 101 "hex:$(cat /tmp/thread-dataset.hex)" 20202021 3840
-```
-
-Then you can control the device through chip-tool. For example, to toggle a lighting app:
-```sh
-chip-tool onoff toggle 101 1
-```
-
-To form a new Thread network instead, run `matter-thread-init --force` on the hub console.
-
-### Manual commissioning test (pyrenode3 harness)
-
-Same simulation as `matter-sim.resc`, driven in-process by `harness/commissioning_test.py`
-(pairing + on/off toggle). UART output is printed with `test_lib` tags (`[matter_hub]:[CLI]:`,
-`[matter_soc]:[CLI]:`, `[SND]:`, `[EXP]:`).
-
-From the repository root (after `fetch_bundle.py`):
+The harness always uses the bundle fetched into `renode_integration/out/bundle`. From the repository root (after `fetch_bundle.py`):
 
 ```sh
 python3 -m pip install -r renode_integration/harness/requirements.txt
 python3 -m pip install --no-deps -e renode_integration/out/bundle/test_lib
 
-python3 renode_integration/harness/commissioning_test.py \
+./renode_integration/harness/demo_test.py \
+  --app lighting_app \
+  --board brd4187c \
   --matter-elf /path/to/matter_thread_soc_lighting_app_freertos.out
 ```
 
-The harness uses the assembled bundle at `renode_integration/out/bundle`. Exit code `0` means commissioning and
-toggle succeeded. Device logs are on stdout from `test_lib`.
+While the harness runs you can still attach with `nc localhost 4540` (hub) and `nc localhost 3452` (SoC). UART output is tagged in the harness log (`[matter_hub]:[CLI]:`, `[matter_soc]:[CLI]:`, etc.).
+
+Use `--interactive` to commission the device and control it from a hub shell prompt. This skips the predefined demo steps and keeps the same commissioned simulation running until you exit:
+
+```sh
+./renode_integration/harness/demo_test.py \
+  --matter-elf /path/to/matter_thread_soc_lighting_app_freertos.out \
+  --interactive
+```
+
+At the `hub>` prompt, enter commands such as:
+
+```text
+hub> chip-tool onoff on 101 1
+hub> chip-tool onoff read on-off 101 1
+hub> chip-tool onoff off 101 1
+hub> exit
+```
+
+Use `exit`, `quit`, Ctrl-D, or Ctrl-C to close the session and simulation. A failed command is reported and returns you to the prompt. State is retained during the session; a new invocation starts a fresh simulation and commissions again. Interactive mode is for non-interactive hub shell commands such as `chip-tool`, not programs that require their own input prompt.
+
+You can also supply `--app` in interactive mode to select its device setup. For `--app light_switch_app`, provide `--extra-elf` with the lighting ELF; the light is node **102** and the switch is node **101**. Without `--interactive`, `--app` runs its predefined demo flow and exits, as CI does. Edit `demo_flows.yaml` for per-app CI steps.
+
+Nightly and PR runs: [`.github/workflows/renode-demo-tests.yaml`](../.github/workflows/renode-demo-tests.yaml). To form a new Thread network from the hub console, run `matter-thread-init --force` (e.g. via `nc` during a long-running session).
+
+Cold boot (no checkpoint) remains `resc/matter-sim-full.resc` for maintainers regenerating the bundle checkpoint.
 
 ### Manual provisioning test
 Fetch once with `--require-provision` so the script fails if the provisioning image is not on GHCR yet. Add `-p PR-NUM`
@@ -198,17 +186,16 @@ build-tools-image ──────┘         │
                           publish-runtime (optional)
 ```
 
-### CI commissioning test
+### CI demo tests
 
-Workflow [`.github/workflows/renode-commissioning-tests.yaml`](../.github/workflows/renode-commissioning-tests.yaml) runs from [dev-apps-builder](../.github/workflows/dev-apps-builder.yaml) after the mg24 lighting app build. It fetches the published Renode bundle from GHCR, loads the PR lighting app ELF (`brd4187c`), and runs:
+Workflow [`.github/workflows/renode-demo-tests.yaml`](../.github/workflows/renode-demo-tests.yaml) drives `harness/demo_test.py` against `harness/demo_flows.yaml` (thread README `chip-tool` steps after commissioning).
 
-```sh
-chip-tool pairing ble-thread 101 "hex:$(cat /tmp/thread-dataset.hex)" 20202021 3840
-chip-tool onoff toggle 101 1
-```
+| Trigger | Scope |
+|---------|--------|
+| Reusable call from [dev-apps-builder](../.github/workflows/dev-apps-builder.yaml) | Full builds only; all 13 demo apps after their builds finish (non-blocking while in pilot) |
+| `workflow_run` after **Packages Validation** | Successful full builds on `release_2.10-1.6.1` only; all 13 Matter-over-Thread demo apps × boards in `harness/demo_config.py` |
 
-The job is non-blocking (`continue-on-error`) during the pilot. Hub and SoC UART
-output is streamed to the job log via Renode `test_lib`.
+Jobs run in parallel (`fail-fast: false`), one per app and board: 13 apps × nine boards (117 jobs). Both entry paths require full builds. The reusable call passes the required `build-type` input; app selection always includes all demos. The boards are `brd4187c`, `brd4116a`, `brd4407a`, `brd4186c`, `brd4117a`, `brd4118a`, `brd4120a`, `brd4121a`, and `brd1019a`. Each job loads `platforms/boards/silabs/<board>.repl`. ELFs come from `renode-demo-<build-type>-<app>-<platform>` artifacts (tree paths under `out/<board>/…`; downloaded with `actions/download-artifact` and located by board in the workflow). Hub and SoC UART output is streamed to the job log via Renode `test_lib`.
 
 ### CI provisioning test
 Will be implemented in future PRs.

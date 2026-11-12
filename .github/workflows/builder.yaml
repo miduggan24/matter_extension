@@ -78,17 +78,16 @@ jobs:
                       echo "Created ${file}.asset"
                   done
 
-            # Need separate upload step for Renode ELF files to run commissioning test in parallel
+            # Need separate upload step for Renode ELF files to run demo tests in parallel
             # Merge artifacts step deletes ELF files
-            - name: Upload Renode commissioning ELF
-              if: >-
-                  inputs.example-app == 'lighting_app' && inputs.platform == 'mg24' &&
-                  inputs.build-type != 'custom-sqa'
+            - name: Upload Renode demo ELF artifact
+              if: contains(fromJson('["mg24","mg26","sixg301"]'), inputs.platform) && inputs.build-type != 'custom-sqa'
               uses: actions/upload-artifact@v7
               with:
-                  name: renode-commissioning-${{ inputs.build-type }}-lighting-mg24
+                  name: renode-demo-${{ inputs.build-type }}-${{ inputs.example-app }}-${{ inputs.platform }}
                   path: |
-                      out/brd4187c/matter_thread_soc_lighting_app_series_2_freertos_solution/**/matter_thread_soc_lighting_app_freertos.out
+                      out/**/matter_thread_soc_*.out
+                      !out/**/*copy-sources*/**
                   if-no-files-found: error
                   overwrite: true
 
