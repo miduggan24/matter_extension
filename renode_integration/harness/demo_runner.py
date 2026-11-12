@@ -39,14 +39,8 @@ def _commission(hub: object, node_id: int, timeout_s: float = COMMISSION_TIMEOUT
 
 
 def _chip_tool_subject_from_acl(report: str) -> int | None:
-    for match in re.finditer(r"Subjects:\s*\[([^\]]+)\]", report):
-        for part in match.group(1).split(","):
-            part = part.strip()
-            if part.isdigit():
-                return int(part)
-    for match in re.finditer(r'"subjects":\s*\[\s*(\d+)', report):
-        return int(match.group(1))
-    return None
+    match = re.search(r"Subjects:\s*\d+\s+entries.*?\[1\]:\s*(\d+)", report, re.DOTALL | re.I)
+    return int(match.group(1)) if match else None
 
 
 def _grant_switch_acl_on_light(hub: object, light_node: int, switch_node: int) -> None:
