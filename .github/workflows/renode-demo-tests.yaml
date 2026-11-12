@@ -8,6 +8,7 @@ on:
     branches:
       - main
       - "release_*"
+      - "feature/MATTER-7279" # TODO: remove after testing
     types: [completed]
 
 permissions:
