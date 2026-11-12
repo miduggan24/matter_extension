@@ -143,15 +143,31 @@ class MatterSim:
         uart: str = "eusart0",
         extra_hex: Path | str | None = None,
     ) -> None:
-        """Add a Matter SoC using the bundled test_lib API."""
-        test_lib.create_matter_soc(
-            machine_name,
-            board.removesuffix(".repl"),
-            str(Path(elf_path).resolve()),
-            cli_port,
-            uart,
-            extra_hex=str(Path(extra_hex).resolve()) if extra_hex else None,
-        )
+        """Add a Matter SoC after the hub checkpoint is loaded."""
+        board_name = board.removesuffix(".repl")
+        repl = f"platforms/boards/silabs/{board_name}.repl"
+        if not (Path(test_lib.renode_base_path()) / repl).is_file():
+            raise FileNotFoundError(f"board REPL not found: {repl}")
+
+        elf = Path(elf_path).resolve()
+        cli_name = f"matter_cli_{machine_name}"
+        hex_path = Path(extra_hex).resolve() if extra_hex is not None else None
+
+        steps = [
+            f'mach create "{machine_name}"',
+            "using sysbus",
+            f"machine LoadPlatformDescription @{repl}",
+            f"sysbus LoadELF @{elf}",
+            *( [f"sysbus LoadHEX @{hex_path}"] if hex_path else [] ),
+            'cpu VectorTableOffset `sysbus GetSymbolAddress "__Vectors"`',
+            "cpu PerformanceInMips 50",
+            "connector Connect sysbus.radio wireless",
+            "connector Connect sysbus.radio ble",
+            f'emulation CreateServerSocketTerminal {cli_port} "{cli_name}" false',
+            f"connector Connect sysbus.{uart} {cli_name}",
+        ]
+        for cmd in steps:
+            test_lib.execute_monitor_command(cmd)
 
     def mount_provision(self, tester: object, timeout_s: float = DEFAULT_UART_TIMEOUT_S) -> None:
         """Run matter-provision-mount on the hub (after matter-sim-prov.resc LoadImage)."""
