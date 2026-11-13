@@ -83,8 +83,9 @@ def login_root(tester: object, timeout_s: float = DEFAULT_UART_TIMEOUT_S) -> Non
 
 def run_shell(tester: object, cmd: str, timeout_s: float = DEFAULT_UART_TIMEOUT_S) -> tuple[int, str]:
     """Run a shell command on the guest and return its exit code and UART transcript."""
+    tester.ClearReport()
     test_lib.write_line(tester, f'{cmd}; echo "__RC=$?"')
-    matched = test_lib.wait_for(tester, r"__RC=(\d+)", timeout=timeout_s)
+    matched = test_lib.wait_for(tester, r"^__RC=(\d+)\r?$", timeout=timeout_s, endline=True)
     report = str(tester.GetReport())
     line_match = re.search(r"__RC=(\d+)", matched) if matched else None
     if line_match is not None:
@@ -93,10 +94,11 @@ def run_shell(tester: object, cmd: str, timeout_s: float = DEFAULT_UART_TIMEOUT_
 
 
 class MatterSim:
-    """In-process Renode session for one bundle directory."""
+    """In-process Renode session, optionally exposing TCP consoles for manual use."""
 
-    def __init__(self, bundle_dir: Path) -> None:
+    def __init__(self, bundle_dir: Path, *, socket_consoles: bool = True) -> None:
         self.bundle_dir = bundle_dir.resolve()
+        self._socket_consoles = socket_consoles
         configure_renode_env(self.bundle_dir)
         from pyrenode3.wrappers import Emulation, Monitor
 
@@ -119,17 +121,18 @@ class MatterSim:
         checkpoint: Path | None = None,
         hub_console_port: int = 4540,
     ) -> None:
-        """Load the Thread hub checkpoint and expose the hub console (ports 4540 / chip-tool)."""
+        """Load the Thread hub checkpoint and optionally expose its TCP console."""
         ckpt = (checkpoint or self.bundle_dir / "linux-booted-thread.save").resolve()
         if not ckpt.is_file():
             raise FileNotFoundError(f"checkpoint not found: {ckpt}")
         test_lib.execute_monitor_command(f"EmulationManager Load @{ckpt}")
         test_lib.execute_monitor_command("logLevel 3")
         test_lib.execute_monitor_command('mach set "matter_hub"')
-        test_lib.execute_monitor_command(
-            f'emulation CreateServerSocketTerminal {hub_console_port} "matter_hub_console" false'
-        )
-        test_lib.execute_monitor_command("connector Connect sysbus.uart1 matter_hub_console")
+        if self._socket_consoles:
+            test_lib.execute_monitor_command(
+                f'emulation CreateServerSocketTerminal {hub_console_port} "matter_hub_console" false'
+            )
+            test_lib.execute_monitor_command("connector Connect sysbus.uart1 matter_hub_console")
         test_lib.execute_monitor_command('mach set "matter_hub"')
         test_lib.execute_monitor_command("start")
 
@@ -163,9 +166,12 @@ class MatterSim:
             "cpu PerformanceInMips 50",
             "connector Connect sysbus.radio wireless",
             "connector Connect sysbus.radio ble",
-            f'emulation CreateServerSocketTerminal {cli_port} "{cli_name}" false',
-            f"connector Connect sysbus.{uart} {cli_name}",
         ]
+        if self._socket_consoles:
+            steps.extend([
+                f'emulation CreateServerSocketTerminal {cli_port} "{cli_name}" false',
+                f"connector Connect sysbus.{uart} {cli_name}",
+            ])
         for cmd in steps:
             test_lib.execute_monitor_command(cmd)
 

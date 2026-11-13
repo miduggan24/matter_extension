@@ -21,7 +21,7 @@ evse_app:
   steps:
     - command: chip-tool energyevse read state 101 1
     - command: chip-tool energyevse disable 101 1 --timedInteractionTimeoutMs 1000
-    - command: chip-tool energyevse enable-charging 0xFFFFFFFF 6000 32000 101 1 --timedInteractionTimeoutMs 1000
+    - command: chip-tool energyevse enable-charging null 6000 32000 101 1 --timedInteractionTimeoutMs 1000
     - command: chip-tool energyevsemode read current-mode 101 1
 
 fan_control_app:

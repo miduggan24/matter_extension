@@ -174,7 +174,7 @@ def run_demo(
         light_node = int(flow["light_node"])
         switch_node = int(flow["switch_node"])
 
-    sim = MatterSim(DEFAULT_BUNDLE)
+    sim = MatterSim(DEFAULT_BUNDLE, socket_consoles=interactive)
     try:
         sim.load_thread_checkpoint()
         hub = sim.hub_uart()
