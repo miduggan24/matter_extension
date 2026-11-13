@@ -88,7 +88,7 @@ This sample app works out of the box with no additional configuration required. 
    ```shell
    chip-tool energyevse read state 1 1
    chip-tool energyevse disable 1 1
-   chip-tool energyevse enable-charging 0xFFFFFFFF 6000 32000 1 1 --timedInteractionTimeoutMs 1000
+   chip-tool energyevse enable-charging null 6000 32000 1 1 --timedInteractionTimeoutMs 1000
    chip-tool energyevsemode read current-mode 1 1
    ```
 
