@@ -42,6 +42,6 @@
     "deployment_target": "26.0"
   },
   "ghcr": {
-    "package": "ghcr.io/siliconlabssoftware/matter-renode-sim"
+    "package": "ghcr.io/miduggan24/matter-renode-sim"
   }
 }
