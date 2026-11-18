@@ -88,7 +88,7 @@ jobs:
             build-type: ${{ needs.set-build-type.outputs.build-type }}
             package-version: ${{ inputs.package-version }}
             conan-cache-key: ${{ inputs.conan-cache-key }}
-            trustzone-support: true
+            # trustzone-support: true
 
     build_air_quality_sensor_app:
         name: Build Air Quality Sensor App
@@ -280,18 +280,18 @@ jobs:
             package-version: ${{ inputs.package-version }}
             conan-cache-key: ${{ inputs.conan-cache-key }}
 
-    build_series_3_bootloader:
-        name: Build Series 3 Bootloader
-        needs: [set-build-type, cache-tools]
-        uses: ./.github/workflows/builder-pkg.yaml
-        with:
-            json-file-path: './.github/silabs-builds-series-3-bootloader.json'
-            path-to-example-app: slc/apps/bootloaders/bootloader_storage_single_4096k_series_3/matter_bootloader_internal_series_3.slcw
-            example-app: bootloader
-            build-type: ${{ needs.set-build-type.outputs.build-type }}
-            platform: series-3-bootloader
-            package-version: ${{ inputs.package-version }}
-            conan-cache-key: ${{ inputs.conan-cache-key }}
+    # build_series_3_bootloader:
+    #     name: Build Series 3 Bootloader
+    #     needs: [set-build-type, cache-tools]
+    #     uses: ./.github/workflows/builder-pkg.yaml
+    #     with:
+    #         json-file-path: './.github/silabs-builds-series-3-bootloader.json'
+    #         path-to-example-app: slc/apps/bootloaders/bootloader_storage_single_4096k_series_3/matter_bootloader_internal_series_3.slcw
+    #         example-app: bootloader
+    #         build-type: ${{ needs.set-build-type.outputs.build-type }}
+    #         platform: series-3-bootloader
+    #         package-version: ${{ inputs.package-version }}
+    #         conan-cache-key: ${{ inputs.conan-cache-key }}
 
     build-sqa-tools:
         name: Build SQA Tools
@@ -329,7 +329,7 @@ jobs:
             - build_closure_app
             - build_oven_app
             - build_rangehood_app
-            - build_series_3_bootloader
+            # - build_series_3_bootloader
             - build_wake_on_matter_app
             - build_generator_firmware
         if: ${{ !cancelled() && !failure() }}
